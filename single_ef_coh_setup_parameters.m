@@ -3,11 +3,8 @@
 %prepare matlab
 clear;                           % clear variables
 close all;                       % close figures
-addpath('~/dde_biftool_v3.1.1/ddebiftool/'); 
-addpath('~/dde_biftool_v3.1.1/ddebiftool_extra_psol/');
-addpath('~/dde_biftool_v3.1.1/ddebiftool_utilities/');
-addpath('~/dde_biftool_v3.1.1/ddebiftool_extra_rotsym');
 
+%Options are important, read them.
 single_ef_coh_options;
 
 %define indicies
@@ -45,8 +42,8 @@ ind_c0 		= 29;
 %% --
 
 
-%define params in kg, m, s
-%general constants, these are the last parameters passed to the par vector
+%define params in kg, m, s aka SI UNITS.
+%general constants, these are the parameters passed to the par vector
 epsi0 = 8.85e-12;		%F m^-1 == J V^-2 m^-1
 hbar = 6.58e-16;		%Js
 e0 = 1.6e-19;			%C
@@ -79,7 +76,11 @@ J	   = 160*(1e-6); 	%microAmps -> Amps
 
 
 
-  %% --
+%% --
+
+
+%NOTICE: Below was my attempt at using dimensional, but non-SI units.
+%I have never gotten it to work; however, the units are left just in case they become necessary.
 
   %{
   %define params in nm, ns, microAmps, V, eV, microC
@@ -118,8 +119,8 @@ J	   = 160*(1e-6); 	%microAmps -> Amps
   feed_ampli = 0.05;
   tau_fb 	   = 6;			%ns
   %}
-
-  % --
+  
+% --
 
   %{
   %define params in nm, ps, microAmps, V, eV, microC
@@ -160,5 +161,10 @@ J	   = 160*(1e-6); 	%microAmps -> Amps
   %}
 
 
-%create par array
-par = [kappa_s, kappa_w, mu_s, mu_w, epsi_ss, epsi_ww, epsi_sw, epsi_ws, beta, J_p, eta, tau_r, S_in, V, Z_QD, n_bg, tau_sp, T_2, A, hbar_omega, epsi_tilda, J, feed_phase, feed_ampli, tau_fb, epsi0, hbar, e0, c0];
+% --
+
+
+%create parameter array called par
+par = [kappa_s, kappa_w, mu_s, mu_w, epsi_ss, epsi_ww, epsi_sw, epsi_ws, beta, J_p, ...
+      eta, tau_r, S_in, V, Z_QD, n_bg, tau_sp, T_2, A, hbar_omega, epsi_tilda, J, ...
+      feed_phase, feed_ampli, tau_fb, epsi0, hbar, e0, c0];
