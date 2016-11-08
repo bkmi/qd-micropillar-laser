@@ -68,14 +68,25 @@ opt_inputs={'extra_condition',1,'print_residual_info',0};
 
 % Setup steady state and start with continuation.
 
-%Setup stst
-%[dummycw,suc]=SetupStst(funcs,'contpar',[ind_feed_phase,ind_omega],'corpar',ind_omega,...
-%    'x',xx_guess,'parameter',par,opt_inputs{:},...
-%    'max_step',[ind_feed_phase,2*pi/64] ,'max_bound',[ind_feed_phase,4*pi*4],'newton_max_iterations',10);
-%figure(2); clf;
-%dummycw=br_contn(funcs,dummycw,50);
 
-%{ %FOR FEED AMPLI
+%FOR FEED PHASE
+%plot names
+plot_param_name = 'Feedback Phase';
+plot_param_unit = '(no units)';
+
+%prepare ddebif
+par_cont_ind = [ind_feed_phase,ind_omega];
+[branch1,suc]=SetupStst(funcs,'contpar',par_cont_ind,'corpar',ind_omega,...
+    'x',xx_guess,'parameter',par,opt_inputs{:},...
+    'max_step',[ind_feed_phase,2*pi/16] ,'max_bound',[ind_feed_phase,8*pi],'newton_max_iterations',10);
+branch1.method.continuation.plot=0;
+[branch1,s,f,r]=br_contn(funcs,branch1,500);
+%branch1=br_rvers(branch1);
+%[branch1,s,f,r]=br_contn(funcs,branch1,50);
+
+
+%{
+%FOR FEED AMPLI
 par_cont_ind = [ind_feed_ampli,ind_omega];
 [branch1,suc]=SetupStst(funcs,'contpar',par_cont_ind,'corpar',ind_omega,...
     'x',xx_guess,'parameter',par,opt_inputs{:},...
@@ -86,16 +97,6 @@ branch1.method.continuation.plot=0;
 %[branch1,s,f,r]=br_contn(funcs,branch1,50);
 %}
 
-%FOR FEED PHASE
-par_cont_ind = [ind_feed_phase,ind_omega];
-[branch1,suc]=SetupStst(funcs,'contpar',par_cont_ind,'corpar',ind_omega,...
-    'x',xx_guess,'parameter',par,opt_inputs{:},...
-    'max_step',[ind_feed_phase,2*pi/64] ,'max_bound',[ind_feed_phase,4*pi],'newton_max_iterations',10);
-branch1.method.continuation.plot=0;
-[branch1,s,f,r]=br_contn(funcs,branch1,100);
-%branch1=br_rvers(branch1);
-%[branch1,s,f,r]=br_contn(funcs,branch1,50);
-
 
 % --
 
@@ -104,22 +105,24 @@ branch1.method.continuation.plot=0;
 
 branch1_plot_vals = c_extract(branch1, par_cont_ind);
 
+
 % Create plots versus modified params
 figure(2); clf;
 subplot(2,2,[1,2]);
 plot(branch1_plot_vals.par(1,:), arrayfun(@(x)norm(x),branch1_plot_vals.soln(1,:)+1i*branch1_plot_vals.soln(2,:)))
-title({'Electric Field Amplitude vs Param'; strcat('with J=',num2str(J),'A')})
-xlabel(strcat('Param', ' needs units'))
-ylabel(strcat('|E(t)| ', ef_units))
+title({strcat('Electric Field Amplitude-vs-', plot_param_name); strcat('with J=',num2str(J,'%1.1e'),'A')})
+xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
+ylabel(strcat({'|E(t)| '}, ef_units))
+
 
 subplot(2,2,3);
 plot(branch1_plot_vals.par(1,:),branch1_plot_vals.soln(3,:))
-title('QD Occupation Prob vs Param')
-xlabel(strcat('Param', ' needs units'))
+title(strcat({'QD Occupation Prob vs '},plot_param_name))
+xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
 ylabel('\rho(t) (no units)')
 
 subplot(2,2,4);
 plot(branch1_plot_vals.par(1,:),branch1_plot_vals.soln(4,:))
-title('Carrier Density vs Param')
-xlabel(strcat('Param', ' needs units'))
-ylabel(strcat('n_r(t) ',n_units))
+title(strcat({'Carrier Density vs '},plot_param_name))
+xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
+ylabel(strcat({'n_r(t) '},n_units))
