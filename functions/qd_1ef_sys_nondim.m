@@ -38,24 +38,16 @@ function f = qd_1ef_sys(E, Etau, rho, rhotau, n, ntau, kappa_s, kappa_w, mu_s, m
     
     epsi_bg = n_bg^2;
     
-    %from mathematica + by hand, most likely to be wrong
-    %Edot   = kappa_s*tau_sp*(exp(-1i*feed_phase)*Etau-E) + ((2*epsi_tilda*Z_QD*beta*epsi_ss*hbar_omega)/(V*epsi0*epsi_bg))*((E.*rho)./(E.*conj(E))) + ((hbar_omega*T_2*Z_QD*(mu_s^2)*tau_sp)/(V*epsi0*epsi_bg*hbar^2))*(E./(1 + E.*conj(E))).*(2*rho-1);
-    %rhodot = n.*(1-rho) - rho - ((T_2*mu_s^2*tau_sp)/(2*epsi_tilda*epsi_ss*hbar^2))*(2*rho-1).*(E.*conj(E))./(1 + (E.*conj(E)));
-    %ndot   = -((2*S_in*Z_QD*tau_sp)/A)*n.*(1-rho) - (tau_sp/tau_r)*n + ((eta*(J-J_p)*S_in*tau_sp^2)/(A*e0));
-    
-    % By hand
-    %Edot = tau_sp*((hbar_omega*2*Z_QD)/(epsi0*epsi_bg))*((mu_s^2*T_2)/(2*hbar^2))*(2*rho-1).*E.*(1+(E.*conj(E)))^(-1) - tau_sp*kappa_s*(E - exp(-1i*feed_phase)*feed_ampli*Etau) + beta*((hbar_omega*2*Z_QD)/(epsi0*epsi_bg))*epsi_ss*epsi_tilda*rho.*E./(E.*conj(E));
-    
-    %with substitution
-    F = hbar_omega*2*Z_QD/(epsi0*epsi_bg*V);
-    Q = mu_s^2*T_2/(2*hbar^2);
-    theta = sqrt((epsi_ss*epsi_tilda)^-1);
     lambda = tau_sp;
+    theta = sqrt((epsi_ss*epsi_tilda)^-1);
     phi = (S_in*tau_sp)^(-1);
     
-    Edot = (lambda*F*Q/(1+(E.*conj(E)))).*(2*rho-1)*E - lambda*kappa_s*(E-exp(-1i*feed_phase)*feed_ampli*Etau) + (lambda*epsi_ss*epsi_bg*beta*F/tau_sp)*rho.*E./(E.*conj(E));
-    rhodot = n.*(1-rho) - rho - ((T_2*mu_s^2*tau_sp)/(2*epsi_tilda*epsi_ss*hbar^2))*(2*rho-1).*(E.*conj(E))./(1 + (E.*conj(E))); %this one is copied but I'm pretty sure it's right
-    ndot = (lambda/phi)*(eta/(e0*A))*(J-J_p) - lambda*S_in*(2*Z_QD/A)*(1-rho) - lambda/tau_r*n;
+    
+    g = ((norm(mu_s)^2)*T_2/(2*hbar^2))*(1+(E.*conj(E))).^(-1);
+    
+    Edot = lambda*(((hbar_omega/(epsi0*epsi_bg))*(2*Z_QD/V)*g.*(2*rho-1).*E) - (kappa_s*(E-feed_ampli*exp(-1.0i*feed_phase)*Etau)) + (1/norm(theta)^2)*(beta*hbar_omega/(epsi0*epsi_bg))*(2*Z_QD/V)*(rho/tau_sp).*(E./(E.*conj(E))));
+    rhodot = lambda*(-(norm(theta)^2*g.*(2*rho-1).*(E.*conj(E))) - (rho/tau_sp) + (phi*S_in*n.*(1-rho))); 
+    ndot = (lambda/phi)*(((eta/(e0*A))*(J-J_p)) - phi*((S_in*n).*((2*Z_QD/A)*(1-rho))) - phi*(n/tau_r));
     
     f = cat(1, real(Edot), imag(Edot), rhodot, ndot);
     
