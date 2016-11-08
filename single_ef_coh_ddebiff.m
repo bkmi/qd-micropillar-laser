@@ -1,3 +1,8 @@
+%This whole thing is essentially pointless. I need rot_sym to solve the system in any valuable way. I just experimented with this before I got rot_sym working.
+%The whole thing is commented out, but it will eventually be deleted... probably soon.
+
+%{
+
 %This program runs Redlich's system s.t. there is only 1 strong electric field.
 
 %begin bifurcation analysis
@@ -55,3 +60,5 @@ branch1=br_rvers(branch1);
 %  im(E), im(E_tau_fb),
 %  rho, rho_tau_fb,
 %  n, n_tau_fb] == xx
+
+%}
