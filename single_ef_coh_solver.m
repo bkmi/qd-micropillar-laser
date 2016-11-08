@@ -48,21 +48,21 @@ sol = dde23(@(t,y,z)sys_4solver([y,z]),lags,hist,tspan, options);
 figure(1); clf;
 subplot(2,2,[1,2]);
 plot(sol.x,arrayfun(@(x)norm(x),sol.y(1,:)+1i*sol.y(2,:)))
-title({'Electric Field Amplitude vs Time '; strcat('with J=',num2str(J),'A,',' hist=[re(E),im(E),\rho,n_r]=', mat2str(hist))})
-xlabel(strcat('Time ', time_units))
-ylabel(strcat('|E(t)| ', ef_units))
+title({'Electric Field Amplitude vs Time '; strcat('with J=',num2str(J,'%1.1e'),'A,',' hist=[re(E),im(E),\rho,n_r]=', mat2str(hist))})
+xlabel(strcat({'Time '}, time_units))
+ylabel(strcat({'|E(t)| '}, ef_units))
 
 subplot(2,2,3);
 plot(sol.x,sol.y(3,:))
 title('QD Occupation Prob vs Time')
-xlabel(strcat('Time ', time_units))
+xlabel(strcat({'Time '}, time_units))
 ylabel('\rho(t) (no units)')
 
 subplot(2,2,4);
 plot(sol.x,sol.y(4,:))
 title('Carrier Density vs Time')
-xlabel(strcat('Time ', time_units))
-ylabel(strcat('n_r(t) ',n_units))
+xlabel(strcat({'Time '}, time_units))
+ylabel(strcat({'n_r(t) '},n_units))
 
 
 % --
