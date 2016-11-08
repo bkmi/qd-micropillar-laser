@@ -1,5 +1,5 @@
 function f = qd_1ef_sys(E, Etau, rho, rhotau, n, ntau, kappa_s, kappa_w, mu_s, mu_w, epsi_ss, epsi_ww, epsi_sw, epsi_ws, beta, J_p, eta, tau_r, S_in, V, Z_QD, n_bg, tau_sp, T_2, A, hbar_omega, epsi_tilda, J, feed_phase, feed_ampli, tau_fb, epsi0, hbar, e0, c0)
-    % First step in inputing a coherent feedback, signgle electric field direction, system.
+    % First step in inputing a coherent feedback, single electric field direction, system.
     %
     % This function takes in every element explicitly so it can be easily
     % understood by the user. The Etau, rhotau, and ntau refer to delay by feedback.

@@ -26,4 +26,4 @@ max_time = 9;	%units set with dim choice
 % dde23 solver options
 % https://www.mathworks.com/help/matlab/ref/ddeset.html#f81-1031913
 %,'RelTol',0.01,'InitialStep', 0.001e-12, 'MaxStep', 0.01e-12, 'OutputFcn',@odeplot,
-options = ddeset('RelTol',10^-5, 'OutputFcn', @odeplot)
+options = ddeset('RelTol',10^-8, 'OutputFcn', @odeplot)
