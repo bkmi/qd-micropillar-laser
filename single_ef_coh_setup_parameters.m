@@ -74,7 +74,7 @@ A 	   = 3.14*(1e-6)^2; 	%micro m^2
 hbar_omega = 1.38*(1.6e-19); 	%eV -> J
 epsi_tilda = epsi0*n_bg*c0;
 %continued param in paper
-J	   = 160*(1e-6); 	%microAmps -> Amps
+J	   = 2.5*90*(1e-6); 	%microAmps -> Amps (2.5 * Threshold. Threshold from Redlich paper, 2.5 from ott10)
 
 
 
@@ -84,7 +84,7 @@ J	   = 160*(1e-6); 	%microAmps -> Amps
 %NOTICE: Below was my attempt at using dimensional, but non-SI units.
 %I have never gotten it to work; however, the units are left just in case they become necessary.
 
-  %{
+%{
   %define params in nm, ns, microAmps, V, eV, microC
   %general constants, these are the last parameters passed to the par vector
   epsi0 = 8.85e-12*(1e6)		%A s V^-1 m^-1 -> microA ns V^-1 nm^-1
@@ -120,11 +120,11 @@ J	   = 160*(1e-6); 	%microAmps -> Amps
   feed_phase = 0;
   feed_ampli = 0.05;
   tau_fb 	   = 6;			%ns
-  %}
+%}
   
 % --
 
-  %{
+%{
   %define params in nm, ps, microAmps, V, eV, microC
   %general constants, these are the last parameters passed to the par vector
   epsi0 = 8.85e-12*(1e6)*(1e3)	%A s V^-1 m^-1 -> microA ns V^-1 nm^-1 -> microA ps V^-1 nm^-1
@@ -160,7 +160,7 @@ J	   = 160*(1e-6); 	%microAmps -> Amps
   feed_phase = 0;
   feed_ampli = 0.05;
   tau_fb 	   = 6e6;		%ns -> ps
-  %}
+%}
 
 
 % --

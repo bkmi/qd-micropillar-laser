@@ -79,6 +79,7 @@ xx_guess = sol.y(:,end)
 %  im(E),
 %  rho, 
 %  n ] == x
+% ['re(E)', 're(E_tau)'; 'im(E)', 'im(E_tau)'; 'rho', 'rho_tau'; 'n_r', 'n_r_tau']
 
 %implying the following for "z"
 % [re(E_tau_fb),

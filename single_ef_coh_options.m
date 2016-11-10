@@ -15,12 +15,12 @@ hist=[1e-9;0;0;0];
 
 %TIME SECTION (Depends on unit choice!!!)
 %feedback/delay params
-feed_phase = 0;
-feed_ampli = .05;
-tau_fb 	   = 6;	%units set with dim choice
+feed_phase = pi; %phase from ott10
+feed_ampli = .00;
+tau_fb 	   = 0.8;	%units set with dim choice
 %time bound
 min_time = 0;	%units set with dim choice
-max_time = 9;	%units set with dim choice
+max_time = 40;	%units set with dim choice
 
 
 % dde23 solver options
