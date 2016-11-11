@@ -134,9 +134,18 @@ ylabel(strcat({'n_r(t) '},n_units))
 
 %Stability
 
-%from lang kobayashi demo
+%from lang kobayashi demo, get stability
+branch1.method.stability.minimal_real_part = -3.0
 [nunst_branch1,dom,defect,branch1.point]=GetStability(branch1,...
 'exclude_trivial',true,'locate_trivial',@(p)0,'funcs',funcs);
+
+%from lina's example, plot real eigenvalue part versus parameter
+figure(3); clf;
+[x_measure,y_measure]= df_measr(1,branch1)
+br_plot(branch1,x_measure,y_measure);
+title(strcat('Real part of Eigenvalues-vs-', plot_param_name))
+xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
+ylabel('re(\lambda)')
 
 %{
 %from lang kobayashi demo
@@ -153,3 +162,4 @@ title({strcat('Electric Field Amplitude-vs-', plot_param_name); strcat('with J='
 xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
 ylabel(strcat({'|E(t)| '}, ef_units))
 %}
+
