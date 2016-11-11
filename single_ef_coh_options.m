@@ -15,15 +15,15 @@ hist=[1e-9;0;0;0];
 
 %TIME SECTION (Depends on unit choice!!!)
 %feedback/delay params
-feed_phase = 0;
-feed_ampli = .05;
-tau_fb 	   = 6;	%units set with dim choice
+feed_phase = pi; %phase from ott10
+feed_ampli = 0.00;
+tau_fb 	   = 0.8;	%units set with dim choice
 %time bound
 min_time = 0;	%units set with dim choice
-max_time = 9;	%units set with dim choice
+max_time = 15;	%units set with dim choice
 
 
 % dde23 solver options
 % https://www.mathworks.com/help/matlab/ref/ddeset.html#f81-1031913
 %,'RelTol',0.01,'InitialStep', 0.001e-12, 'MaxStep', 0.01e-12, 'OutputFcn',@odeplot,
-options = ddeset('RelTol',10^-8, 'OutputFcn', @odeplot)
+options = ddeset('RelTol',10^-8) , 'OutputFcn', @odeplot
