@@ -2,7 +2,7 @@
 single_ef_coh_setup_parameters
 single_ef_coh_solver
 single_ef_coh_ddebiff_setup_rot
-single_ef_coh_ddebiff_cont_feed_ampli
+single_ef_coh_ddebiff_continuation
 
 %Set the param which will be used to generate the time series.
 series_along_par_ind = par_cont_ind(1);
