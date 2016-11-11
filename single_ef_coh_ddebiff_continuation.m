@@ -88,8 +88,22 @@ xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
 ylabel('re(\lambda)')
 
 %{
+% How about a hopf bifurcation?!
+
 %from lang kobayashi demo
-ind_hopf=find(arrayfun(@(x)real(x.stability.l0(1))>0,branch1.point),1,'first')
+%ind_hopf=find(arrayfun(@(x)real(x.stability.l0(1))>0,branch1.point),1,'first')
+ind_hopf=find(abs(diff(nunst_branch1))==2);
+
+[h1branch,suc]=SetupRWHopf(funcs,branch1,ind_hopf(1),...
+  'contpar',[ind_feed_ampli,ind_omega],opt_inputs{:},...
+  'print_residual_info',1,'dir',ind_feed_ampli,'step',1e-4,'minimal_accuracy',1e-4);
+h1branch=br_contn(funcs,h1branch,50);
+h1branch=br_rvers(h1branch);
+h1branch=br_contn(funcs,h1branch,50);
+
+
+
+
 
 %plot point
 figure(3); clf;
