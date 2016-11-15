@@ -38,7 +38,7 @@ figure(2); clf;
 [branch1,s,f,r]=br_contn(funcs,branch1,200);
 title(strcat('Omega-vs-', plot_param_name))
 xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
-ylabel('Omega (?? units)')
+ylabel('Omega (1/\tau_{sp})')
 
 
 % --
@@ -51,7 +51,7 @@ branch1.method.stability.minimal_real_part = -1.0
 [nunst_branch1,dom,defect,branch1.point]=GetStability(branch1,...
 'exclude_trivial',true,'locate_trivial',@(p)0,'funcs',funcs);
 
-figure(3); clf;
+figure(4); clf;
 stst_contin_param_vals = arrayfun(@(p)p.parameter(par_cont_ind(1)),branch1.point); %Get stst continued parameter values
 stst_contin_ef_vals = arrayfun(@(p)norm(p.x(1:2)),branch1.point); %Get stst normed ef vals
 sel=@(x,i)x(nunst_branch1==i);
@@ -67,8 +67,23 @@ title({strcat('Electric Field Amplitude-vs-', plot_param_name); strcat('with J='
 xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
 ylabel(strcat({'|E(t)| '}, ef_units))
 
+%remake '.method.continuation.plot' omega vs continuation param plot
+%stst_contin_param_vals already set above
+stst_contin_omega_vals = arrayfun(@(p)p.parameter(ind_omega),branch1.point);
+plot(sel(stst_contin_param_vals,0),sel(stst_contin_omega_vals,0),'k.', ...
+    sel(stst_contin_param_vals,1),sel(stst_contin_omega_vals,1),'r.',...
+    sel(stst_contin_param_vals,2),sel(stst_contin_omega_vals,2),'c.',...
+    sel(stst_contin_param_vals,3),sel(stst_contin_omega_vals,3),'b.',...
+    sel(stst_contin_param_vals,4),sel(stst_contin_omega_vals,4),'g.',...
+    sel(stst_contin_param_vals,5),sel(stst_contin_omega_vals,5),'m.',...
+    sel(stst_contin_param_vals,6),sel(stst_contin_omega_vals,6),'y.',...
+    'linewidth',2);
+title(strcat('Omega-vs-', plot_param_name))
+xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
+ylabel('Omega (1/\tau_{sp})')
+
 %from lina's example, plot real eigenvalue part versus parameter
-figure(4); clf;
+figure(5); clf;
 [x_measure,y_measure]= df_measr(1,branch1);
 br_plot(branch1,x_measure,y_measure);
 title(strcat('Real part of Eigenvalues-vs-', plot_param_name))
