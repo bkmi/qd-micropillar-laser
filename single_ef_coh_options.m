@@ -30,3 +30,8 @@ max_time = 15;	%units set with dim choice
 % https://www.mathworks.com/help/matlab/ref/ddeset.html#f81-1031913
 %,'RelTol',0.01,'InitialStep', 0.001e-12, 'MaxStep', 0.01e-12, 'OutputFcn',@odeplot,
 options = ddeset('RelTol',10^-8) %, 'OutputFcn', @odeplot
+
+% Data output folder (parent)
+% The data files will be in a folder named based on the parameter settings at the start of the simulation
+datadir = '../data_qd-micropillar-laser-ddebif/';
+mkdir(datadir)
