@@ -86,7 +86,7 @@ epsi_tilda = epsi0*n_bg*c0;
 %continued param in paper
 J	   = 2.5*90*(1e-6); 	%microAmps -> Amps (2.5 * Threshold. Threshold from Redlich paper, 2.5 from ott10)
 %current is always reported in amps for the folder name!!
-unitsystem = 'SI UNITS FOR PARAMS';
+param_units = 'SI units used in definding parameters.';
 
 
 % --
@@ -136,7 +136,7 @@ if saveit == 1
 
 
   % Save parameter index
-  save(strcat(datadir_subfolder,'parameter_index.mat'),'ind_kappa_s','ind_kappa_w','ind_mu_s', ...
+  save(strcat(datadir_subfolder,'parameters_index.mat'),'ind_kappa_s','ind_kappa_w','ind_mu_s', ...
 	'ind_mu_w','ind_epsi_ss','ind_epsi_ww','ind_epsi_sw',...
 	'ind_epsi_ws','ind_beta','ind_J_p','ind_eta','ind_tau_r',...
 	'ind_S_in','ind_V','ind_Z_QD','ind_n_bg','ind_tau_sp',...
@@ -150,9 +150,17 @@ if saveit == 1
 	'S_in','V','Z_QD','n_bg','tau_sp',...
 	'T_2','A','hbar_omega','epsi_tilda','J',...
 	'feed_phase','feed_ampli','tau_fb','epsi0',...
-	'hbar','e0','c0')
+	'hbar','e0','c0','par')
   % Save unit system
-  save(strcat(datadir_subfolder,'unit_system.mat'),'unitsystem')
+  if dim_choice == 1 %dimensional units used in solver
+    calc_units = 'Dimensional units used in calculations i.e. solver and bifurcations.';
+  elseif dim_choice == 2 %non-dimensional units used in solver
+    calc_units = 'Non-dimensional units used in calculations i.e. solver and bifurcations.';
+  else
+    calc_units = 'No information was given regarding the use of dimensional or non-dimensional units in options.';
+    warning('No information was given regarding the use of dimensional or non-dimensional units in options. \n This is recorded.');
+  end
+  save(strcat(datadir_subfolder,'unit_system.mat'),'param_units','calc_units')
 elseif saveit == 2
 else
   error('Choose a saveit setting in options!!')

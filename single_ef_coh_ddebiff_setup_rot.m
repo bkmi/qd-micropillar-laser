@@ -32,6 +32,18 @@ end
 % --
 
 
+% Save rotation parameters
+if saveit==1
+  save(strcat(datadir_subfolder,'rot_parameters.mat'),'omega','ind_omega','A_rot','expA_rot', 'xx_guess')
+  save(strcat(datadir_subfolder,'parameters.mat'), 'par', '-append')
+elseif saveit == 2
+else
+  error('Choose a saveit setting in options!!')
+end
+
+% --
+
+
 %DIMENSION HANDLER
 if dim_choice == 1
   %define rhs ready ddebif, dimensional units
@@ -46,6 +58,7 @@ elseif dim_choice == 2
 else
 error('make a choice about units in options')
 end
+
 
 
 % --
@@ -63,3 +76,14 @@ opt_inputs={'extra_condition',1,'print_residual_info',0};
 %  rho, rho_tau_fb,
 %  n, n_tau_fb] == xx
 
+
+% --
+
+
+% Save rotation functions
+if saveit==1
+  save(strcat(datadir_subfolder,'rot_funcs.mat'),'rhs','funcs','opt_inputs')
+elseif saveit == 2
+else
+  error('Choose a saveit setting in options!!')
+end

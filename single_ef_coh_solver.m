@@ -86,3 +86,19 @@ xx_guess = sol.y(:,end)
 %  im(E_tau_fb),
 %  rho_tau_fb,
 %  n_tau_fb] == z
+
+
+% --
+
+
+if saveit == 1
+  % Save turn on solution.
+  turnON_TimeSeries = sol
+  save(strcat(datadir_subfolder,'turnON_TimeSeries.mat'),'turnON_TimeSeries')
+  % Save the relevant units for our system
+  save(strcat(datadir_subfolder,'unit_system.mat'),'ef_units','time_units','n_units','-append')
+
+elseif saveit == 2
+else
+  warning('Choose a saveit setting in options!! You work is currently not saved!')
+end

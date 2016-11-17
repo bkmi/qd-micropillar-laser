@@ -51,6 +51,9 @@ branch1.method.stability.minimal_real_part = -1.0
 [nunst_branch1,dom,defect,branch1.point]=GetStability(branch1,...
 'exclude_trivial',true,'locate_trivial',@(p)0,'funcs',funcs);
 
+%Save branch1 with stability
+save(strcat(datadir_subfolder,'branch1.mat'),'branch1','s','f','r','nunst_branch1','dom','defect')
+
 figure(3); clf;
 stst_contin_param_vals = arrayfun(@(p)p.parameter(par_cont_ind(1)),branch1.point); %Get stst continued parameter values
 stst_contin_ef_vals = arrayfun(@(p)norm(p.x(1:2)),branch1.point); %Get stst normed ef vals

@@ -33,8 +33,8 @@ options = ddeset('RelTol',10^-8) %, 'OutputFcn', @odeplot
 
 
 % SAVE??
-saveit = 1 %Yes, save it.
-%saveit = 2 %No, don't save it.
+saveit = 1; %Yes, save it.
+%saveit = 2; %No, don't save it.
 
 % IF SAVEIT = 1 -->
 % Data output folder (Data container folder generated at same level as program files. Each simulation is in a sub folder below.)
