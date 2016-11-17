@@ -31,7 +31,12 @@ max_time = 15;	%units set with dim choice
 %,'RelTol',0.01,'InitialStep', 0.001e-12, 'MaxStep', 0.01e-12, 'OutputFcn',@odeplot,
 options = ddeset('RelTol',10^-8) %, 'OutputFcn', @odeplot
 
-% Data output folder (parent)
-% The data files will be in a folder named based on the parameter settings at the start of the simulation
+
+% SAVE??
+saveit = 1 %Yes, save it.
+%saveit = 2 %No, don't save it.
+
+% IF SAVEIT = 1 -->
+% Data output folder (Data container folder generated at same level as program files. Each simulation is in a sub folder below.)
+% The data files will be in a sub folder named based on the parameter settings at the start of the simulation
 datadir = '../data_qd-micropillar-laser-ddebif/';
-mkdir(datadir)

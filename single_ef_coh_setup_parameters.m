@@ -10,6 +10,15 @@ clear('present_working_directory')
 %Options are important, read them.
 single_ef_coh_options;
 
+if saveit == 1
+  mkdir(datadir)
+  fprintf(strcat('Work saved in:\n', datadir, '\n'))
+elseif saveit == 2
+  fprintf('Work will NOT be saved. \n')
+else
+  error('Choose a saveit setting in options!!')
+end
+  
 %define indicies
 ind_kappa_s     = 1;
 ind_kappa_w     = 2;
@@ -71,12 +80,13 @@ Z_QD 	   = 110;
 n_bg 	   = 3.34;
 tau_sp 	   = 1*(1e-9);		%ns -> s
 T_2 	   = 0.33*(1e-12); 	%ps -> s
-A 	   = 3.14*(1e-6)^2; 	%micro m^2
+A 	   = 3.14*(1e-6)^2; 	%micro m^2 -> m^2
 hbar_omega = 1.38*(1.6e-19); 	%eV -> J
 epsi_tilda = epsi0*n_bg*c0;
 %continued param in paper
 J	   = 2.5*90*(1e-6); 	%microAmps -> Amps (2.5 * Threshold. Threshold from Redlich paper, 2.5 from ott10)
 %current is always reported in amps for the folder name!!
+unitsystem = 'SI UNITS FOR PARAMS';
 
 
 % --
@@ -87,30 +97,63 @@ par = [kappa_s, kappa_w, mu_s, mu_w, epsi_ss, epsi_ww, epsi_sw, epsi_ws, beta, J
       eta, tau_r, S_in, V, Z_QD, n_bg, tau_sp, T_2, A, hbar_omega, epsi_tilda, J, ...
       feed_phase, feed_ampli, tau_fb, epsi0, hbar, e0, c0];
 
-%%
-%% create a folder named with relevant parameters
+      
+% --
 
-% mono mode (single) electric field
-mode_report = 'monoEF_';
 
-% report dimensionality
-if dim_choice == 1
-  % dimensional units
-  dimension_report = 'dim_';
-elseif dim_choice == 2
-  % non-dimensional units
-  dimension_report = 'nondim_';
+if saveit == 1
+  %% create a folder named with relevant parameters
+
+  % mono mode (single) electric field
+  mode_report = 'monoEF_';
+
+  % report dimensionality
+  if dim_choice == 1
+    % dimensional units
+    dimension_report = 'dim_';
+  elseif dim_choice == 2
+    % non-dimensional units
+    dimension_report = 'nondim_';
+  else
+    error('make a choice about units in options');
+  end
+
+  % report current IN AMPS
+  current_report = strcat('J=',num2str(J,'%1.1e'),'_');
+
+  % report feedback params
+  feed_tau_report = strcat('tau=',num2str(tau_fb),'_');
+  feed_amp_report = strcat('amp=',num2str(feed_ampli));
+
+  % Make directory and clean up.
+  datadir_subfolder = strcat(datadir,mode_report,dimension_report,current_report,'FEED_',feed_tau_report,feed_amp_report,'/');
+  mkdir(datadir_subfolder);
+  fprintf(strcat('Subfolder:\n', datadir_subfolder,'\n'))
+  clear('mode_report', 'dimension_report', 'current_report', 'feed_tau_report', 'feed_amp_report')
+
+
+  % --
+
+
+  % Save parameter index
+  save(strcat(datadir_subfolder,'parameter_index.mat'),'ind_kappa_s','ind_kappa_w','ind_mu_s', ...
+	'ind_mu_w','ind_epsi_ss','ind_epsi_ww','ind_epsi_sw',...
+	'ind_epsi_ws','ind_beta','ind_J_p','ind_eta','ind_tau_r',...
+	'ind_S_in','ind_V','ind_Z_QD','ind_n_bg','ind_tau_sp',...
+	'ind_T_2','ind_A','ind_hbar_omega','ind_epsi_tilda','ind_J',...
+	'ind_feed_phase','ind_feed_ampli','ind_tau_fb','ind_epsi0',...
+	'ind_hbar','ind_e0','ind_c0')
+  % Save parameters
+  save(strcat(datadir_subfolder,'parameters.mat'),'kappa_s','kappa_w','mu_s', ...
+	'mu_w','epsi_ss','epsi_ww','epsi_sw',...
+	'epsi_ws','beta','J_p','eta','tau_r',...
+	'S_in','V','Z_QD','n_bg','tau_sp',...
+	'T_2','A','hbar_omega','epsi_tilda','J',...
+	'feed_phase','feed_ampli','tau_fb','epsi0',...
+	'hbar','e0','c0')
+  % Save unit system
+  save(strcat(datadir_subfolder,'unit_system.mat'),'unitsystem')
+elseif saveit == 2
 else
-  error('make a choice about units in options');
+  error('Choose a saveit setting in options!!')
 end
-
-% report current IN AMPS
-current_report = strcat('J=',num2str(J,'%1.1e'),'_');
-
-% report feedback params
-feed_tau_report = strcat('tau=',num2str(tau_fb),'_');
-feed_amp_report = strcat('amp=',num2str(feed_ampli));
-
-% Make directory and clean up.
-mkdir(strcat(datadir,mode_report,dimension_report,current_report,'FEED_',feed_tau_report,feed_amp_report));
-clear('mode_report', 'dimension_report', 'current_report', 'feed_tau_report', 'feed_amp_report')
