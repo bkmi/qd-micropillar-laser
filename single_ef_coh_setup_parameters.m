@@ -3,7 +3,7 @@
 %prepare matlab
 clear;                           % clear variables
 close all;                       % close figures
-present_working_directory = pwd
+present_working_directory = pwd;
 addpath(strcat(present_working_directory,'/functions/'))
 clear('present_working_directory')
 
@@ -109,61 +109,62 @@ par = [kappa_s, kappa_w, mu_s, mu_w, epsi_ss, epsi_ww, epsi_sw, epsi_ws, beta, J
 
 
 
-%% Determine name of folder with relevant parameters.
 
-% mono mode (single) electric field
-mode_report = 'monoEF_';
-
-% report dimensionality
-if dim_choice == 1
-  dimension_report = 'dim_'; % dimensional units
-elseif dim_choice == 2
-  dimension_report = 'nondim_'; % non-dimensional units
-else
-  error('make a choice about units in options');
-end
-
-% report current IN AMPS
-current_report = strcat('J=',num2str(J,'%1.1e'),'_');
-
-% report feedback params
-feed_tau_report = strcat('tau=',num2str(tau_fb),'_');
-feed_amp_report = strcat('amp=',num2str(feed_ampli));
-
-% Folder shall be named below:
-datadir_subfolder = strcat(datadir,mode_report,dimension_report,current_report,'FEED_',feed_tau_report,feed_amp_report,'/');
-
-% Make user confirm overwrite
-warning('error', 'MATLAB:MKDIR:DirectoryExists'); % set warnings to errors.
-try
-    mkdir(datadir_subfolder);
-catch what_error
-  switch what_error.identifier
-    case 'MATLAB:MKDIR:DirectoryExists'
-      while(1)
-	overwrite = input('\n\nWARNING: Directory already exists, would you like to overwrite data? \n1 = yes \n2 = no \n\n');
-	if overwrite == 1
-	  warning('On', 'MATLAB:MKDIR:DirectoryExists'); % reset warnings
-	  break
-	elseif overwrite == 2
-	  warning('On', 'MATLAB:MKDIR:DirectoryExists'); % reset warnings
-	  fprintf('\n\nYou have chosen not to overwrite the files. \nThe program WILL NOT SAVE.\n\n\n')
-	  saveit = 2; %turn off saving
-	  break
-	end
-      end
-    otherwise
-      rethrow(what_error)
-  end
-end
-clear('overwrite', 'what_error')
-
-
-% --
-
-
-%% Make directory and clean up.
 if saveit == 1
+  
+  %% Determine name of folder with relevant parameters.
+
+  % mono mode (single) electric field
+  mode_report = 'monoEF_';
+
+  % report dimensionality
+  if dim_choice == 1
+    dimension_report = 'dim_'; % dimensional units
+  elseif dim_choice == 2
+    dimension_report = 'nondim_'; % non-dimensional units
+  else
+    error('make a choice about units in options');
+  end
+
+  % report current IN AMPS
+  current_report = strcat('J=',num2str(J,'%1.1e'),'_');
+
+  % report feedback params
+  feed_tau_report = strcat('tau=',num2str(tau_fb),'_');
+  feed_amp_report = strcat('amp=',num2str(feed_ampli));
+
+  % Folder shall be named below:
+  datadir_subfolder = strcat(datadir,mode_report,dimension_report,current_report,'FEED_',feed_tau_report,feed_amp_report,'/');
+
+  % Make user confirm overwrite
+  warning('error', 'MATLAB:MKDIR:DirectoryExists'); % set warnings to errors.
+  try
+      mkdir(datadir_subfolder);
+  catch what_error
+    switch what_error.identifier
+      case 'MATLAB:MKDIR:DirectoryExists'
+	while(1)
+	  overwrite = input('\n\nWARNING: Directory already exists, would you like to overwrite data? \n1 = yes \n2 = no \n\n');
+	  if overwrite == 1
+	    warning('On', 'MATLAB:MKDIR:DirectoryExists'); % reset warnings
+	    break
+	  elseif overwrite == 2
+	    warning('On', 'MATLAB:MKDIR:DirectoryExists'); % reset warnings
+	    fprintf('\n\nYou have chosen not to overwrite the files. \nThe program WILL NOT SAVE.\n\n\n')
+	    saveit = 2; %turn off saving
+	    break
+	  end
+	end
+      otherwise
+	rethrow(what_error)
+    end
+  end
+  clear('overwrite', 'what_error')
+
+
+  % --
+
+
   %% create a folder named with relevant parameters
   fprintf(strcat('Subfolder:\n', datadir_subfolder,'\n'))
   
@@ -197,7 +198,7 @@ if saveit == 1
   % Save unit system
   save(strcat(datadir_subfolder,'unit_system.mat'),'param_units','calc_units')
   % Save options
-  save(strcat(datadir_subfolder,'option_choices.mat'),'continue_choice','dim_choice')
+  save(strcat(datadir_subfolder,'option_choices.mat'),'continue_choice','dim_choice','hist','min_time','max_time','dde23_options')
 
 elseif saveit == 2
 else

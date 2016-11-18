@@ -37,8 +37,8 @@ tspan = [min_time, max_time];
 fprintf(strcat('\n___Time span \n___tspan=',mat2str(tspan)))
 
 %solver sets sol variable
-%options in single_ef_coh_options
-sol = dde23(@(t,y,z)sys_4solver([y,z]),lags,hist,tspan, options);
+%dde23_options in single_ef_coh_options
+sol = dde23(@(t,y,z)sys_4solver([y,z]),lags,hist,tspan, dde23_options);
 
 
 % --
