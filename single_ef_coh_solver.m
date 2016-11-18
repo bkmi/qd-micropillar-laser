@@ -94,9 +94,9 @@ xx_guess = sol.y(:,end)
 if saveit == 1
   % Save turn on solution.
   turnON_TimeSeries = sol;
-  save(strcat(datadir_subfolder,'turnON_TimeSeries.mat'),'turnON_TimeSeries')
+  save(strcat(datadir_specific,'turnON_TimeSeries.mat'),'turnON_TimeSeries')
   % Save the relevant units for our system
-  save(strcat(datadir_subfolder,'unit_system.mat'),'ef_units','time_units','n_units','-append')
+  save(strcat(datadir_specific,'unit_system.mat'),'ef_units','time_units','n_units','-append')
 
 elseif saveit == 2
 else

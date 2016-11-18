@@ -37,4 +37,5 @@ while(1)
 end
 
 % Clean up
-clear('datadir_parent','datadir_subfolder','datadir_specific')
+clear('datadir_parent','datadir_subfolder') %Notice how 'datadir_specific' is not cleared.
+					    %This is incase the user changes saveit later.

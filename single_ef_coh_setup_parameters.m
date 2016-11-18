@@ -134,12 +134,12 @@ if saveit == 1
   feed_amp_report = strcat('amp=',num2str(feed_ampli));
 
   % Folder shall be named below:
-  datadir_subfolder = strcat(datadir,mode_report,dimension_report,current_report,'FEED_',feed_tau_report,feed_amp_report,'/');
+  datadir_specific = strcat(datadir,mode_report,dimension_report,current_report,'FEED_',feed_tau_report,feed_amp_report,'/');
 
   % Make user confirm overwrite
   warning('error', 'MATLAB:MKDIR:DirectoryExists'); % set warnings to errors.
   try
-      mkdir(datadir_subfolder);
+      mkdir(datadir_specific);
   catch what_error
     switch what_error.identifier
       case 'MATLAB:MKDIR:DirectoryExists'
@@ -166,11 +166,11 @@ if saveit == 1
 
 
   %% create a folder named with relevant parameters
-  fprintf(strcat('Subfolder:\n', datadir_subfolder,'\n'))
+  fprintf(strcat('Subfolder:\n', datadir_specific,'\n'))
   
   
   % Save parameter index
-  save(strcat(datadir_subfolder,'parameters_index.mat'),'ind_kappa_s','ind_kappa_w','ind_mu_s', ...
+  save(strcat(datadir_specific,'parameters_index.mat'),'ind_kappa_s','ind_kappa_w','ind_mu_s', ...
 	'ind_mu_w','ind_epsi_ss','ind_epsi_ww','ind_epsi_sw',...
 	'ind_epsi_ws','ind_beta','ind_J_p','ind_eta','ind_tau_r',...
 	'ind_S_in','ind_V','ind_Z_QD','ind_n_bg','ind_tau_sp',...
@@ -178,7 +178,7 @@ if saveit == 1
 	'ind_feed_phase','ind_feed_ampli','ind_tau_fb','ind_epsi0',...
 	'ind_hbar','ind_e0','ind_c0')
   % Save parameters
-  save(strcat(datadir_subfolder,'parameters.mat'),'kappa_s','kappa_w','mu_s', ...
+  save(strcat(datadir_specific,'parameters.mat'),'kappa_s','kappa_w','mu_s', ...
 	'mu_w','epsi_ss','epsi_ww','epsi_sw',...
 	'epsi_ws','beta','J_p','eta','tau_r',...
 	'S_in','V','Z_QD','n_bg','tau_sp',...
@@ -196,9 +196,9 @@ if saveit == 1
   end
   
   % Save unit system
-  save(strcat(datadir_subfolder,'unit_system.mat'),'param_units','calc_units')
+  save(strcat(datadir_specific,'unit_system.mat'),'param_units','calc_units')
   % Save options
-  save(strcat(datadir_subfolder,'option_choices.mat'),'continue_choice','dim_choice','hist','min_time','max_time','dde23_options')
+  save(strcat(datadir_specific,'option_choices.mat'),'continue_choice','dim_choice','hist','min_time','max_time','dde23_options')
 
 elseif saveit == 2
 else

@@ -123,7 +123,7 @@ if continue_choice == 1
   
   %Save branch1 with stability
   if saveit==1
-    save(strcat(datadir_subfolder,'branch1.mat'),'branch1','s','f','r','nunst_branch1','dom','defect', 'ind_hopf')
+    save(strcat(datadir_specific,'branch1.mat'),'branch1','s','f','r','nunst_branch1','dom','defect', 'ind_hopf')
   elseif saveit == 2
   else
     error('Choose a saveit setting in options!!')
