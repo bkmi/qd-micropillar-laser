@@ -5,6 +5,9 @@ datadir_parent = '../data_qd-micropillar-laser-ddebif/'; %location of data paren
 datadir_subfolder = 'monoEF_nondim_J=2.2e-04_FEED_tau=0.8_amp=0.55/'; %location of specific data folder
 datadir_specific = strcat(datadir_parent,datadir_subfolder);
 
+% Record options chosen at startup
+load(strcat(datadir_specific,'option_choices.mat'))	%load options choices
+
 % DDE23 solver data
 load(strcat(datadir_specific,'turnON_TimeSeries.mat'))	%load solver data from turn on time series
 

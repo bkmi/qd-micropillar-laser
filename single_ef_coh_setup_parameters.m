@@ -11,7 +11,14 @@ clear('present_working_directory')
 single_ef_coh_options;
 
 if saveit == 1
-  mkdir(datadir)
+  datadir_exist = exist(datadir)
+    if datadir_exist == 0
+      mkdir(datadir)
+    elseif datadir_exist == 7
+    else
+      error('datadir variable does not make sense. Choose a new directory name in options.')
+    end
+  clear('datadir_exist')
   fprintf(strcat('Work saved in:\n', datadir, '\n'))
 elseif saveit == 2
   fprintf('Work will NOT be saved. \n')
@@ -127,7 +134,23 @@ if saveit == 1
 
   % Make directory and clean up.
   datadir_subfolder = strcat(datadir,mode_report,dimension_report,current_report,'FEED_',feed_tau_report,feed_amp_report,'/');
-  mkdir(datadir_subfolder);
+    % Make user confirm overwrite
+    warning('error', 'MATLAB:MKDIR:DirectoryExists'); % set warnings to errors.
+    while(1)
+    try
+	mkdir(datadir_subfolder);
+    catch
+	overwrite = input('\n\nWARNING: Directory already exists, would you like to overwrite data? \n1 = yes \n2 = no \n\n');
+	if overwrite == 1
+	  warning('On', 'MATLAB:MKDIR:DirectoryExists'); % reset warnings
+	  break
+	elseif overwrite == 2
+	  warning('On', 'MATLAB:MKDIR:DirectoryExists'); % reset warnings
+	  error('You have chosen not to overwrite the files. The program is stopping.')
+	end
+    end
+    end
+    clear('overwrite')
   fprintf(strcat('Subfolder:\n', datadir_subfolder,'\n'))
   clear('mode_report', 'dimension_report', 'current_report', 'feed_tau_report', 'feed_amp_report')
 
@@ -160,7 +183,12 @@ if saveit == 1
     calc_units = 'No information was given regarding the use of dimensional or non-dimensional units in options.';
     warning('No information was given regarding the use of dimensional or non-dimensional units in options. \n This is recorded.');
   end
+  
+  % Save unit system
   save(strcat(datadir_subfolder,'unit_system.mat'),'param_units','calc_units')
+  % Save options
+  save(strcat(datadir_subfolder,'option_choices.mat'),'continue_choice','dim_choice')
+
 elseif saveit == 2
 else
   error('Choose a saveit setting in options!!')

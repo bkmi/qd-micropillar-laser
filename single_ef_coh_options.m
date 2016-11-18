@@ -40,3 +40,4 @@ saveit = 1; %Yes, save it.
 % Data output folder (Data container folder generated at same level as program files. Each simulation is in a sub folder below.)
 % The data files will be in a sub folder named based on the parameter settings at the start of the simulation
 datadir = '../data_qd-micropillar-laser-ddebif/';
+
