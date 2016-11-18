@@ -11,7 +11,7 @@ clear('present_working_directory')
 single_ef_coh_options;
 
 if saveit == 1
-  datadir_exist = exist(datadir)
+  datadir_exist = exist(datadir);
     if datadir_exist == 0
       mkdir(datadir)
     elseif datadir_exist == 7
@@ -108,56 +108,66 @@ par = [kappa_s, kappa_w, mu_s, mu_w, epsi_ss, epsi_ww, epsi_sw, epsi_ws, beta, J
 % --
 
 
-if saveit == 1
-  %% create a folder named with relevant parameters
 
-  % mono mode (single) electric field
-  mode_report = 'monoEF_';
+%% Determine name of folder with relevant parameters.
 
-  % report dimensionality
-  if dim_choice == 1
-    % dimensional units
-    dimension_report = 'dim_';
-  elseif dim_choice == 2
-    % non-dimensional units
-    dimension_report = 'nondim_';
-  else
-    error('make a choice about units in options');
-  end
+% mono mode (single) electric field
+mode_report = 'monoEF_';
 
-  % report current IN AMPS
-  current_report = strcat('J=',num2str(J,'%1.1e'),'_');
+% report dimensionality
+if dim_choice == 1
+  dimension_report = 'dim_'; % dimensional units
+elseif dim_choice == 2
+  dimension_report = 'nondim_'; % non-dimensional units
+else
+  error('make a choice about units in options');
+end
 
-  % report feedback params
-  feed_tau_report = strcat('tau=',num2str(tau_fb),'_');
-  feed_amp_report = strcat('amp=',num2str(feed_ampli));
+% report current IN AMPS
+current_report = strcat('J=',num2str(J,'%1.1e'),'_');
 
-  % Make directory and clean up.
-  datadir_subfolder = strcat(datadir,mode_report,dimension_report,current_report,'FEED_',feed_tau_report,feed_amp_report,'/');
-    % Make user confirm overwrite
-    warning('error', 'MATLAB:MKDIR:DirectoryExists'); % set warnings to errors.
-    while(1)
-    try
-	mkdir(datadir_subfolder);
-    catch
+% report feedback params
+feed_tau_report = strcat('tau=',num2str(tau_fb),'_');
+feed_amp_report = strcat('amp=',num2str(feed_ampli));
+
+% Folder shall be named below:
+datadir_subfolder = strcat(datadir,mode_report,dimension_report,current_report,'FEED_',feed_tau_report,feed_amp_report,'/');
+
+% Make user confirm overwrite
+warning('error', 'MATLAB:MKDIR:DirectoryExists'); % set warnings to errors.
+try
+    mkdir(datadir_subfolder);
+catch what_error
+  switch what_error.identifier
+    case 'MATLAB:MKDIR:DirectoryExists'
+      while(1)
 	overwrite = input('\n\nWARNING: Directory already exists, would you like to overwrite data? \n1 = yes \n2 = no \n\n');
 	if overwrite == 1
 	  warning('On', 'MATLAB:MKDIR:DirectoryExists'); % reset warnings
 	  break
 	elseif overwrite == 2
 	  warning('On', 'MATLAB:MKDIR:DirectoryExists'); % reset warnings
-	  error('You have chosen not to overwrite the files. The program is stopping.')
+	  fprintf('\n\nYou have chosen not to overwrite the files. \nThe program WILL NOT SAVE.\n\n\n')
+	  saveit = 2; %turn off saving
+	  break
 	end
-    end
-    end
-    clear('overwrite')
+      end
+    otherwise
+      rethrow(what_error)
+  end
+end
+clear('overwrite', 'what_error')
+
+
+% --
+
+
+%% Make directory and clean up.
+if saveit == 1
+  %% create a folder named with relevant parameters
   fprintf(strcat('Subfolder:\n', datadir_subfolder,'\n'))
-  clear('mode_report', 'dimension_report', 'current_report', 'feed_tau_report', 'feed_amp_report')
-
-
-  % --
-
-
+  
+  
   % Save parameter index
   save(strcat(datadir_subfolder,'parameters_index.mat'),'ind_kappa_s','ind_kappa_w','ind_mu_s', ...
 	'ind_mu_w','ind_epsi_ss','ind_epsi_ww','ind_epsi_sw',...
@@ -193,3 +203,7 @@ elseif saveit == 2
 else
   error('Choose a saveit setting in options!!')
 end
+
+clear('mode_report', 'dimension_report', 'current_report', 'feed_tau_report', 'feed_amp_report')
+
+
