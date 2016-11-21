@@ -32,8 +32,8 @@ max_time = 15;	%units set with dim choice
 dde23_options = ddeset('RelTol',10^-8); %, 'OutputFcn', @odeplot
 
 % SAVE ON A TOTALLY FRESH RUN? (i.e. not loaded from saved data)
-save_if_not_loaded = 1; %Yes, save it.
-%save_if_not_loaded = 2; %No, don't save it.
+%save_if_not_loaded = 1; %Yes, save it.
+save_if_not_loaded = 2; %No, don't save it.
 
 % IF YOU WOULD LIKE TO SAVE. CHOOSE A SAVE FOLDER BELOW:
 % Data output folder (Data container folder generated at same level as program files. Each simulation is in a sub folder below.)
