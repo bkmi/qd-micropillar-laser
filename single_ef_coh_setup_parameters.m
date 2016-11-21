@@ -64,7 +64,7 @@ ind_c0 		= 29;
 %define params in kg, m, s aka SI UNITS.
 %general constants, these are the parameters passed to the par vector
 epsi0 = 8.85e-12;		%F m^-1 == J V^-2 m^-1
-hbar = 6.58e-16;		%Js
+hbar = 1.05e-34;		%Js
 e0 = 1.6e-19;			%C
 c0 = 3.0e8;			%m s^-1
 
