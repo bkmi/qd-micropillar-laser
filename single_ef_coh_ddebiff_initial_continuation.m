@@ -55,14 +55,17 @@ figure(3); clf;
 stst_contin_param_vals = arrayfun(@(p)p.parameter(par_cont_ind(1)),branch1.point); %Get stst continued parameter values
 stst_contin_ef_vals = arrayfun(@(p)norm(p.x(1:2)),branch1.point); %Get stst normed ef vals
 sel=@(x,i)x(nunst_branch1==i);
-plot(sel(stst_contin_param_vals,0),sel(stst_contin_ef_vals,0),'k.', ...
-    sel(stst_contin_param_vals,1),sel(stst_contin_ef_vals,1),'r.',...
-    sel(stst_contin_param_vals,2),sel(stst_contin_ef_vals,2),'c.',...
-    sel(stst_contin_param_vals,3),sel(stst_contin_ef_vals,3),'b.',...
-    sel(stst_contin_param_vals,4),sel(stst_contin_ef_vals,4),'g.',...
-    sel(stst_contin_param_vals,5),sel(stst_contin_ef_vals,5),'m.',...
-    sel(stst_contin_param_vals,6),sel(stst_contin_ef_vals,6),'y.',...
-    'linewidth',2);
+colors = hsv(max(nunst_branch1)+1);
+  hold on
+  for i=[0:max(nunst_branch1)]
+    plot(sel(stst_contin_param_vals,i),sel(stst_contin_ef_vals,i),'.','Color',colors(i+1,:),'MarkerSize',11)
+  end
+  hold off
+  %for legend
+  for i=unique(nunst_branch1)
+    unique_nunst_vals = num2str(i);
+  end
+  legend(unique_nunst_vals)
 title({strcat('Electric Field Amplitude-vs-', plot_param_name); strcat('with J=',num2str(J,'%1.1e'),'A')})
 xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
 ylabel(strcat({'|E(t)| '}, ef_units))
@@ -71,14 +74,16 @@ ylabel(strcat({'|E(t)| '}, ef_units))
 figure(2);clf;
 %stst_contin_param_vals is already set above
 stst_contin_omega_vals = arrayfun(@(p)p.parameter(ind_omega),branch1.point);
-plot(sel(stst_contin_param_vals,0),sel(stst_contin_omega_vals,0),'k.', ...
-    sel(stst_contin_param_vals,1),sel(stst_contin_omega_vals,1),'r.',...
-    sel(stst_contin_param_vals,2),sel(stst_contin_omega_vals,2),'c.',...
-    sel(stst_contin_param_vals,3),sel(stst_contin_omega_vals,3),'b.',...
-    sel(stst_contin_param_vals,4),sel(stst_contin_omega_vals,4),'g.',...
-    sel(stst_contin_param_vals,5),sel(stst_contin_omega_vals,5),'m.',...
-    sel(stst_contin_param_vals,6),sel(stst_contin_omega_vals,6),'y.',...
-    'linewidth',2);
+  hold on
+  for i=[0:max(nunst_branch1)]
+    plot(sel(stst_contin_param_vals,i),sel(stst_contin_omega_vals,i),'.','Color',colors(i+1,:),'MarkerSize',11)
+  end
+  hold off
+  %for legend
+  for i=unique(nunst_branch1)
+    unique_nunst_vals = num2str(i);
+  end
+  legend(unique_nunst_vals)
 title(strcat('Omega-vs-', plot_param_name))
 xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
 ylabel('Omega (1/\tau_{sp})')
@@ -87,14 +92,16 @@ ylabel('Omega (1/\tau_{sp})')
 figure(4); clf;
 stst_contin_rho_vals = arrayfun(@(p)p.x(3),branch1.point);
 stst_contin_omega_vals = arrayfun(@(p)p.parameter(ind_omega),branch1.point);
-plot(sel(stst_contin_rho_vals,0),sel(stst_contin_omega_vals,0),'k.', ...
-    sel(stst_contin_rho_vals,1),sel(stst_contin_omega_vals,1),'r.',...
-    sel(stst_contin_rho_vals,2),sel(stst_contin_omega_vals,2),'c.',...
-    sel(stst_contin_rho_vals,3),sel(stst_contin_omega_vals,3),'b.',...
-    sel(stst_contin_rho_vals,4),sel(stst_contin_omega_vals,4),'g.',...
-    sel(stst_contin_rho_vals,5),sel(stst_contin_omega_vals,5),'m.',...
-    sel(stst_contin_rho_vals,6),sel(stst_contin_omega_vals,6),'y.',...
-    'linewidth',2);
+  hold on
+  for i=[0:max(nunst_branch1)]
+    plot(sel(stst_contin_rho_vals,i),sel(stst_contin_omega_vals,i),'.','Color',colors(i+1,:),'MarkerSize',11)
+  end
+  hold off
+  %for legend
+  for i=unique(nunst_branch1)
+    unique_nunst_vals = num2str(i);
+  end
+  legend(unique_nunst_vals)
 title('Omega vs QD Occupation Probability (\rho)')
 xlabel('\rho (no units)')
 ylabel('Omega (1/\tau_{sp})')
