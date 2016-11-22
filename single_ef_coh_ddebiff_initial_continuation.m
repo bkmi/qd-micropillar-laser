@@ -88,13 +88,13 @@ title(strcat('Omega-vs-', plot_param_name))
 xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
 ylabel('Omega (1/\tau_{sp})')
 
-%Omega vs QD Occupation Probability (\rho) with stability
+% QD Occupation Probability (\rho) vs Omega with stability
 figure(4); clf;
 stst_contin_rho_vals = arrayfun(@(p)p.x(3),branch1.point);
 stst_contin_omega_vals = arrayfun(@(p)p.parameter(ind_omega),branch1.point);
   hold on
   for i=[0:max(nunst_branch1)]
-    plot(sel(stst_contin_rho_vals,i),sel(stst_contin_omega_vals,i),'.','Color',colors(i+1,:),'MarkerSize',11)
+    plot(sel(stst_contin_omega_vals,i),sel(stst_contin_rho_vals,i),'.','Color',colors(i+1,:),'MarkerSize',11)
   end
   hold off
   %for legend
@@ -102,9 +102,9 @@ stst_contin_omega_vals = arrayfun(@(p)p.parameter(ind_omega),branch1.point);
     unique_nunst_vals = num2str(i);
   end
   legend(unique_nunst_vals)
-title('Omega vs QD Occupation Probability (\rho)')
-xlabel('\rho (no units)')
-ylabel('Omega (1/\tau_{sp})')
+title('QD Occupation Probability (\rho) vs Omega')
+xlabel('Omega (1/\tau_{sp})')
+ylabel('\rho (no units)')
 
 %from lina's example, plot real eigenvalue part versus parameter
 figure(5); clf;
@@ -128,9 +128,21 @@ if continue_choice == 1
   plot(stst_contin_param_vals(ind_hopf),stst_contin_omega_vals(ind_hopf),'ks','linewidth',2);
   hold off
   
+  %Augment Electric Field Amplitude-vs-'plot_param_name' with boxes around potential hopf bifurcations
+  figure(3);
+  hold on
+  plot(stst_contin_param_vals(ind_hopf),stst_contin_ef_vals(ind_hopf),'ks','linewidth',2);
+  hold off
+  
+  %Augment QD Occupation Probability (\rho) vs Omega with boxes around potential hopf bifurcations
+  figure(4);
+  hold on
+  plot(stst_contin_omega_vals(ind_hopf),stst_contin_rho_vals(ind_hopf),'ks','linewidth',2)
+  hold off
+  
   %Save branch1 with stability
   if saveit==1
-    save(strcat(datadir_specific,'branch1.mat'),'branch1','s','f','r','nunst_branch1','dom','defect', 'ind_hopf')
+    save(strcat(datadir_specific,'branch1.mat'),'branch1','nunst_branch1','dom','defect', 'ind_hopf')
   elseif saveit == 2
   else
     error('Choose a saveit setting in options!!')
