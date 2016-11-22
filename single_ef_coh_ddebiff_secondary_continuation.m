@@ -100,7 +100,7 @@ if continue_choice == 1
   
   %Save fold_branches
   if saveit==1
-    save(strcat(datadir_specific,'fold_branches.mat'),'fold_branches');
+    save(strcat(datadir_specific,'fold_branches.mat'),'fold_branches','ind_fold');
   elseif saveit == 2
   else
     error('Choose a saveit setting in options!!')

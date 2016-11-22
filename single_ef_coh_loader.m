@@ -18,8 +18,10 @@ load(strcat(datadir_specific,'rot_parameters.mat')); 	%load parameters with omeg
 load(strcat(datadir_specific,'rot_funcs.mat')); 	%load functions
 load(strcat(datadir_specific,'unit_system.mat'),'ef_units','time_units','n_units') %load relevant unit names
 
-% Being loading each, already calculated, branch
-load(strcat(datadir_specific,'branch1.mat')); 	%load initial branch (phase, in this case)
+% Begin loading each, already calculated, branch
+load(strcat(datadir_specific,'branch1.mat'));		%load initial branch
+load(strcat(datadir_specific,'hopf_branches.mat'));	%load hopf branches
+load(strcat(datadir_specific,'fold_branches.mat'));	%load fold brances (and ind_fold)
 
 % Would the user like to overwrite files?
 loaded_overwrite_opt = input('\n\nWARNING: You have loaded this data.\nShould scripts overwrite saved results? \n1 = yes \n2 = no \n\n');
