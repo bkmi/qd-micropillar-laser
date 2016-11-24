@@ -6,6 +6,8 @@ omega = 0;
 %tack on omega for rotational sym aspect
 ind_omega=length(par)+1;
 par(ind_omega)=omega;
+par_units(ind_omega) = {'1/tau_sp'};
+par_names(ind_omega) = {'omega'};
 
 %create rotation matrix
 A_rot=[0,-1,0,0; 1,0,0,0; 0,0,0,0; 0,0,0,0];
@@ -35,7 +37,7 @@ end
 % Save rotation parameters
 if saveit==1
   save(strcat(datadir_specific,'rot_parameters.mat'),'omega','ind_omega','A_rot','expA_rot', 'xx_guess')
-  save(strcat(datadir_specific,'parameters.mat'), 'par', '-append')
+  save(strcat(datadir_specific,'parameters.mat'), 'par', 'par_units', 'par_names', '-append')
 elseif saveit == 2
 else
   error('Choose a saveit setting in options!!')
