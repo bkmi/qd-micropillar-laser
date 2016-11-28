@@ -75,6 +75,9 @@ switch plot_all_opt
     %Plot rho versus omega
     plot_rho_omega( branch1, nunst_branch1, ind_hopf, ind_omega )
     
+    %Plot secondary continuation branches (hopf + fold)
+    plot_secondary_continuation(hopf_branches,fold_branches,par_names,par_units)
+    
   case 2 %Don't plot
     fprintf('\nNot plotting.\n\n')
 end
