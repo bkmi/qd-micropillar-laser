@@ -26,7 +26,7 @@ x_param_vals = arrayfun(@(p)p.parameter(fbranch.parameter.free(1)),fbranch.point
 y_param_vals = arrayfun(@(p)p.parameter(fbranch.parameter.free(2)),fbranch.point); %Get fold continued parameter values for ydir
 
 % Plot points
-plot(x_param_vals,y_param_vals,'.','Color',color);
+plot(x_param_vals,y_param_vals,'.-','Color',color);
 
 % Add title, axes
 
