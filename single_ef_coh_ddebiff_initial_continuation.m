@@ -13,7 +13,8 @@ if continue_choice == 1
   par_cont_ind = [ind_feed_phase,ind_omega];
   [branch1,suc]=SetupStst(funcs,'contpar',par_cont_ind,'corpar',ind_omega,...
       'x',xx_guess,'parameter',par,opt_inputs{:},...
-      'max_step',[ind_feed_phase,2*pi/8] ,'max_bound',[ind_feed_phase,16*pi],'newton_max_iterations',10);
+      'step',2*pi/64,'max_step',[ind_feed_phase,2*pi/32] ,'newton_max_iterations',10, ...
+      'max_bound',[ind_feed_phase,16*pi] );
       
 elseif continue_choice == 2
   %DEFINE FEED AMPLI
@@ -25,7 +26,8 @@ elseif continue_choice == 2
   par_cont_ind = [ind_feed_ampli,ind_omega];
   [branch1,suc]=SetupStst(funcs,'contpar',par_cont_ind,'corpar',ind_omega,...
       'x',xx_guess,'parameter',par,opt_inputs{:},...
-      'max_step',[ind_feed_ampli,0.01] ,'max_bound',[ind_feed_ampli,0.99],'newton_max_iterations',10);
+      'step',0.005,'max_step',[ind_feed_ampli,0.01],'newton_max_iterations',10, ...
+      'max_bound',[ind_feed_ampli,0.99] );
       
 else
 error('make a choice about continue_choice in options')
@@ -35,7 +37,7 @@ end
 %create continuation and plot
 branch1.method.continuation.plot=1;
 figure(2); clf;
-[branch1,s,f,r]=br_contn(funcs,branch1,200);
+[branch1,s,f,r]=br_contn(funcs,branch1,400);
 title(strcat('Omega-vs-', plot_param_name))
 xlabel(strcat(plot_param_name,{' '}, plot_param_unit))
 ylabel('Omega (1/\tau_{sp})')
