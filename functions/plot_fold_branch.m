@@ -15,6 +15,9 @@ switch nargin
     else
       error('add_2_gcf can either equal 1 or 0. Otherwise, do not call it.')
     end
+    if nargin==4
+        color = 'b';
+    end
   case 3
     figure; clf;
     color = 'b';

@@ -18,7 +18,7 @@ hist=[1e-9;0;0;0];
 
 %TIME SECTION (Depends on unit choice!!!)
 %feedback/delay params
-feed_phase = pi;
+feed_phase = 0;
 feed_ampli = 0.55;
 tau_fb 	   = 0.8;	%units set with dim choice
 %time bound
