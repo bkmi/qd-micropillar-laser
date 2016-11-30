@@ -8,6 +8,20 @@ ind_omega=length(par)+1;
 par(ind_omega)=omega;
 par_units(ind_omega) = {'1/tau_sp'};
 par_names(ind_omega) = {'omega'};
+par_plot_names(ind_omega) = {'\omega'};
+% Recreate a param struct with all of this information.
+param.values = par;
+param.var_names = par_names;
+param.units = par_units;
+param.plot_names = par_plot_names;
+param.unit_system = param_units;
+for i=1:length(param.var_names)
+  param.(param.var_names{i}) = struct;
+  param.(param.var_names{i}).index = i;
+  param.(param.var_names{i}).value = param.values(i);
+  param.(param.var_names{i}).var_name = param.var_names{i};
+  param.(param.var_names{i}).plot_name = param.plot_names{i};
+end
 
 %create rotation matrix
 A_rot=[0,-1,0,0; 1,0,0,0; 0,0,0,0; 0,0,0,0];
@@ -37,7 +51,7 @@ end
 % Save rotation parameters
 if saveit==1
   save(strcat(datadir_specific,'rot_parameters.mat'),'omega','ind_omega','A_rot','expA_rot', 'xx_guess')
-  save(strcat(datadir_specific,'parameters.mat'), 'par', 'par_units', 'par_names', '-append')
+  save(strcat(datadir_specific,'parameters.mat'), 'par', 'par_units', 'par_names','param', '-append')
 elseif saveit == 2
 else
   error('Choose a saveit setting in options!!')
