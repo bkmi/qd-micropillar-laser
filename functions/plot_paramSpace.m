@@ -48,7 +48,7 @@ title(strcat(param.plot_names(plot_params_ind(2)), '-vs-', param.plot_names(plot
 xlabel([param.plot_names(plot_params_ind(1)),param.units(plot_params_ind(1))])
 ylabel([param.plot_names(plot_params_ind(2)),param.units(plot_params_ind(2))])
 
-% Return hold to what it was before running this program.
+% Return hold to what it was before running this function.
 if held_prior==1
     hold on
 elseif held_prior==0
