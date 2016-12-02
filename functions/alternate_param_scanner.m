@@ -1,9 +1,14 @@
-function [ scanned_branch, nunst_scanned_branch ] = alternate_param_scanner( branch_point, funcs, scan_point_count, scan_parm_ind, step_bound_options, min_real_part )
-%
-%   Input: ( branch_point, funcs, scan_point_count, scan_parm_ind, step_bound_options, min_real_part )
+function [scanned_branch, nunst_scanned_branch]=alternate_param_scanner(...
+    branch_point, funcs, scan_point_count, scan_parm_ind, ...
+    step_bound_options, min_real_part )
+%Scans along a new parameter starting at any branch point.
+%   Input: ( branch_point, funcs, scan_point_count, scan_parm_ind, 
+%           step_bound_options, min_real_part )
 %   
-%   step_bound_options = { 'step',1,'max_step',[ind_,1],'newton_max_iterations',10, ...
-%                          'min_bound',[ind_,1], 'max_bound',[ind_,2] }
+%   step_bound_options={'step',1,'max_step',[ind_,1], ...
+%                       'newton_max_iterations',10, ...
+%                       'min_bound',[ind_,1], 'max_bound',[ind_,2]}
+%
 
 opt_inputs={'extra_condition',1,'print_residual_info',0};
 ind_omega = length(branch_point.parameter);
