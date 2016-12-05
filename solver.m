@@ -107,7 +107,7 @@ end
 
 % Setup/use dde23 solver
 lags = params_atStartPoint(ind_tau_fb); % lags == feedback time
-fprintf(strcat('History vector, hist=',mat2str(hist)))
+fprintf(strcat('History vector: \nhist=',mat2str(hist),'\n'))
 dde23_soln = dde23(@(t,y,z)sys_4solver([y,z]),...
     lags,hist,timeSpan, options.dde23_options);
 

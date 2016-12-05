@@ -49,7 +49,7 @@ ylabel('Omega (1/\tau_{sp})')
 %Stability
 
 %from lang kobayashi demo, get stability
-branch1.method.stability.minimal_real_part = -1.0
+branch1.method.stability.minimal_real_part = -1.0;
 [nunst_branch1,dom,defect,branch1.point]=GetStability(branch1,...
 'exclude_trivial',true,'locate_trivial',@(p)0,'funcs',funcs);
 
