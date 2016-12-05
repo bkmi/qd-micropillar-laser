@@ -21,7 +21,7 @@ hist=[1e-9;0;0;0];
 feed_phase = 0;
 feed_ampli = 0.55;
 tau_fb 	   = 0.8;	%units set with dim choice
-%time bound
+%time bound for solver
 min_time = 0;	%units set with dim choice
 max_time = 15;	%units set with dim choice
 
