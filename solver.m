@@ -3,6 +3,14 @@ function [ dde23_soln ] = solver( hist, timeSpan, params_atStartPoint, ...
 %Takes in parameters from the experimental setup and returns a time
 %series plot starting at the values given by a "hist" vector. If "hist" is
 %zero, except for electric field, then this is a "turn on" timeseries.
+%   Input:
+%       hist
+%       timeSpan
+%       params_atStartPoint
+%       ind_tau_fb
+%       ind_J
+%       varargin
+%
 %   Options:
 %       'plot' = 1,0
 %           If you choose to plot = 1 then the solver will output the

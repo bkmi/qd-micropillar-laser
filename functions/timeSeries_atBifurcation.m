@@ -3,6 +3,13 @@ function [ timeSeries_solns ] = timeSeries_atBifurcation( funcs, branch, ...
 %Takes in a branch and produces time series plots around a bifurcation
 %point "n," by making a time series at branch point n and n+1. If
 %bifurcations occur at two point sequentially, the system rejects them.
+%   Inputs:
+%       funcs
+%       branch
+%       timeSpan
+%       param
+%       branch_name
+%       varargin
 %   Options:
 %       'plot' = 1,0
 %           If you choose to plot = 1 then the solver will output the

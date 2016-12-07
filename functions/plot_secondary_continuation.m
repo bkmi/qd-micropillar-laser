@@ -1,7 +1,15 @@
-function [ ] = plot_secondary_continuation(hopf_branches, fold_branches, nunst_source_branch, ind_hopf, ind_fold, par_names,par_units)
-% Plot a hopf branch.
-%   add_2_gcf = 1 -> Adds plot to current figure.
-%   add_2_gcf = 0 or Not Called -> New figure.
+function [ ] = plot_secondary_continuation(hopf_branches, fold_branches, ...
+    nunst_source_branch, ind_hopf, ind_fold, par_names, par_units)
+%Plot the hopf and fold branches together on a single plot.
+%   Input:
+%       hopf_branches
+%       fold_branches
+%       nunst_source_branch
+%       ind_hopf
+%       ind_fold
+%       par_names
+%       par_units
+%   Options: (none)
 
 
 % Make a new figure
@@ -13,8 +21,7 @@ hbranch_nameList = fieldnames(hopf_branches);
 hbranch_calcError_nameList = {};
 
 % create colormap based on nunst at the bifurcation point
-%colors = hsv(max(nunst_source_branch)+1); %rave colors
-colors = spring(max(nunst_source_branch)+1); %rave colors
+colors = hsv(max(nunst_source_branch)+1); %rave colors
 hbranch_nameList_colors = zeros(length(ind_hopf),3);
 for i=1:length(ind_hopf)
   hbranch_nameList_colors(i,:) = colors(nunst_source_branch(ind_hopf(i))+1,:);

@@ -5,7 +5,11 @@ function [  ] = plot_paramSpace( branch, plot_params_ind, param, varargin )
 %   Options:
 %       'add_2_gcf' = 0, 1
 %       'color'     = [ 0, 0, 0 ] or 'b', 'r', etc.
+% 
+% REPLACED BY plot_branch.m
+% REPLACED BY plot_branch.m
 
+disp('REPLACED BY plot_branch.m')
 
 % Create an options struct from varargin, preserves cell arrays.
 for i=1:length(varargin)
