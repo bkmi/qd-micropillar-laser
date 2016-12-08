@@ -1,5 +1,17 @@
 %This program runs for the single mode laser case.
 
+
+% Create step options for ind_feed_phase, ind_feed_ampli
+
+step_bound_opt_PHASE = { 'step',2*pi/64,...
+    'max_step',[ind_feed_phase,(1.15)*2*pi/64], ...
+    'newton_max_iterations',10, 'max_bound',[ind_feed_phase,6*pi] };
+
+step_bound_opt_AMP = { 'step',0.003,'max_step',[ind_feed_ampli,0.003], ...
+    'newton_max_iterations',10, ...
+    'max_bound',[ind_feed_ampli,0.9999],...
+    'min_bound', [ind_feed_ampli,0.001] };
+
 % Setup steady state and start with continuation.
 % continue_choice variable determines which paramter is continued.
 
@@ -13,8 +25,7 @@ if continue_choice == 1
   par_cont_ind = [ind_feed_phase,ind_omega];
   [branch1,suc]=SetupStst(funcs,'contpar',par_cont_ind,'corpar',ind_omega,...
       'x',xx_guess,'parameter',par,opt_inputs{:},...
-      'step',2*pi/64,'max_step',[ind_feed_phase,(1.15)*2*pi/64] ,'newton_max_iterations',10, ...
-      'max_bound',[ind_feed_phase,6*pi] );
+       step_bound_opt_PHASE{:});
       
 elseif continue_choice == 2
   %DEFINE FEED AMPLI
@@ -26,8 +37,7 @@ elseif continue_choice == 2
   par_cont_ind = [ind_feed_ampli,ind_omega];
   [branch1,suc]=SetupStst(funcs,'contpar',par_cont_ind,'corpar',ind_omega,...
       'x',xx_guess,'parameter',par,opt_inputs{:},...
-      'step',0.005,'max_step',[ind_feed_ampli,0.01],'newton_max_iterations',10, ...
-      'max_bound',[ind_feed_ampli,0.99] );
+       step_bound_opt_AMP{:} );
       
 else
 error('make a choice about continue_choice in options')
@@ -59,7 +69,7 @@ stst_contin_ef_vals = arrayfun(@(p)norm(p.x(1:2)),branch1.point); %Get stst norm
 sel=@(x,i)x(nunst_branch1==i);
 colors = hsv(max(nunst_branch1)+1);
   hold on
-  for i=[0:max(nunst_branch1)]
+  for i=0:max(nunst_branch1)
     plot(sel(stst_contin_param_vals,i),sel(stst_contin_ef_vals,i),'.','Color',colors(i+1,:),'MarkerSize',11)
   end
   hold off
@@ -77,7 +87,7 @@ figure(2);clf;
 %stst_contin_param_vals is already set above
 stst_contin_omega_vals = arrayfun(@(p)p.parameter(ind_omega),branch1.point);
   hold on
-  for i=[0:max(nunst_branch1)]
+  for i=0:max(nunst_branch1)
     plot(sel(stst_contin_param_vals,i),sel(stst_contin_omega_vals,i),'.','Color',colors(i+1,:),'MarkerSize',11)
   end
   hold off
@@ -95,7 +105,7 @@ figure(4); clf;
 stst_contin_rho_vals = arrayfun(@(p)p.x(3),branch1.point);
 stst_contin_omega_vals = arrayfun(@(p)p.parameter(ind_omega),branch1.point);
   hold on
-  for i=[0:max(nunst_branch1)]
+  for i=0:max(nunst_branch1)
     plot(sel(stst_contin_omega_vals,i),sel(stst_contin_rho_vals,i),'.','Color',colors(i+1,:),'MarkerSize',11)
   end
   hold off
@@ -144,7 +154,7 @@ if continue_choice == 1
   
   %Save branch1 with stability
   if saveit==1
-    save(strcat(datadir_specific,'branch1.mat'),'branch1','nunst_branch1','dom','defect', 'ind_hopf')
+    save(strcat(datadir_specific,'branch1.mat'),'branch1','nunst_branch1', 'ind_hopf', 'step_bound_opt_PHASE', 'step_bound_opt_AMP')
   elseif saveit == 2
   else
     error('Choose a saveit setting in options!!')

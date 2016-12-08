@@ -34,8 +34,10 @@ function [ ptBranInd_extrema ] = plot_branch( branch, param_struct, ...
 %       'add_2_gcf' = 0, 1
 %           'add_2_gcf' = 1 -> Adds plot to current figure.
 %           'add_2_gcf' = 0 or Not Called -> New figure.
-%       'Color' = [ 0, 0, 0 ] OR 'b', 'y', etc.
+%       'color' = [ 0, 0, 0 ] OR 'b', 'y', etc.
 %           The branch will be the given color.
+%       'nunst_color' = nunst_branch
+%           Color the dots based on their nunst value. Overrides 'color'.
 %       'PlotStyle' = { 'LineStyle', '-', 'Marker', '.' }
 %           Input a cell array which will be passed to the plotter. Usual
 %           plot commands apply.
@@ -70,14 +72,20 @@ else
     error('add_2_gcf can either equal 1 or 0. Otherwise, do not call it.')
 end
 
-if ~isfield(options,'Color')
-    options.Color = 'b';
+if ~isfield(options,'color') && ~isfield(options,'nunst_color')
+    options.color = 'b';
+elseif isfield(options,'nunst_color')
+    if length(options.nunst_color) ~= length(branch.point)
+        warning('Len: nunst_branch =/= Len: points. Some points missing.')
+        % Calculate everything from nunst_branch in case the user wants to
+        % avoid plotting some points.
+    end
 end
 
 if ~isfield(options,'PlotStyle')
-    options.PlotStyle = { 'LineStyle', '-', 'Marker', '.' };
+    options.PlotStyle = { 'LineStyle', 'none', 'Marker', '.' };
 end
-    
+
 
 % Prepare figure and vals
 x_param_vals = arrayfun(@(p)p.parameter(options.axes_indParam(1)), ... 
@@ -105,8 +113,28 @@ ptBranInd_extrema.(param_struct.var_names{options.axes_indParam(2)}).Ind = ...
     [min_ind_y, max_ind_y];
 
 % Plot points
-plot(x_param_vals,y_param_vals, ...
-    'Color',options.Color, options.PlotStyle{:} );
+if isfield(options,'nunst_color')
+    nunst_pts = options.nunst_color;
+    sel=@(x,i)x(nunst_pts==i);
+    colors = lines(max(nunst_pts)+1);
+    
+    hold on
+    for i=0:max(nunst_pts)
+    plot(sel(x_param_vals,i),sel(y_param_vals,i), ...
+        'Color',colors(i+1,:), options.PlotStyle{:} );
+    end
+    hold off
+      
+    for i=unique(nunst_pts)
+        unique_nunst_vals = num2str(i);
+    end
+    legend(unique_nunst_vals)
+    
+else
+    plot(x_param_vals,y_param_vals, ...
+        'Color',options.color, options.PlotStyle{:} );
+end
+
 
 % Add title, axes
 title(strcat(param_struct.plot_names(options.axes_indParam(2)), ...

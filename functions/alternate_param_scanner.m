@@ -12,6 +12,15 @@ function [scanned_branch, nunst_scanned_branch]=alternate_param_scanner(...
 %           step_bound_options={'step',1,'max_step',[ind_,1], ...
 %                               'newton_max_iterations',10, ...
 %                               'min_bound',[ind_,1], 'max_bound',[ind_,2]}
+%   Output:
+%       scanned_branch
+%           New stst branch starting from that point moving in
+%           scan_parm_ind direction.
+%
+%       nunst_scanned_branch
+%           nunst for scanned_branch.
+%
+%
 %   Options:
 %       'plot_prog' = 0, 1
 %           Plot progress? Yes or no.
