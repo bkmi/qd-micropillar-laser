@@ -108,7 +108,23 @@ par_names = {'kappa_s', 'kappa_w', 'mu_s', 'mu_w', 'epsi_ss', 'epsi_ww', 'epsi_s
 	      'feed_phase', 'feed_ampli', 'tau_fb', 'epsi0', 'hbar', 'e0', 'c0'};
 par_units = {'1/s', '1/s', 'mC', 'mC', 'm^2/(AV)', 'm^2/(AV)', 'm^2/(AV)', 'm^2/(AV)', '(no units)', 'A', ...
 	      '(no units)', 's', 'm^2/s', 'm^3', '(no units)', '(no units)', 's', 's', 'm^2', 'J', 'J/(V^2 s)', 'A', ...
-	      'radians', '(no units)', 'tau_sp', 'J/(V^2 m)', 'Js', 'C', 'm/s'};
+	      '(radians)', '(no units)', 'tau_sp', 'J/(V^2 m)', 'Js', 'C', 'm/s'};
+par_plot_names = {'\kappa_s', '\kappa_w', '\mu_s', '\mu_w', '\epsilon_{ss}', '\epsilon_{ww}', '\epsilon_{sw}', '\epsilon_{ws}', '\beta', 'J_p', ...
+		  '\eta', '\tau_r', 'S^{in}', 'V', 'Z^{QD}', 'n_{bg}', '\tau_{sp}', 'T_2', 'A', 'hbar\omega', '\epsilon_0n_{bg}c_{0}', 'J', ...
+		  'Feedback Phase', 'Feedback Amp', '\tau_{fb}', '\epislon0', 'hbar', 'e_0', 'c_0'};
+% Create a param struct with all of this information.
+param.values = par;
+param.var_names = par_names;
+param.units = par_units;
+param.plot_names = par_plot_names;
+param.unit_system = param_units;
+for i=1:length(param.var_names)
+  param.(param.var_names{i}) = struct;
+  param.(param.var_names{i}).index = i;
+  param.(param.var_names{i}).value = param.values(i);
+  param.(param.var_names{i}).var_name = param.var_names{i};
+  param.(param.var_names{i}).plot_name = param.plot_names{i};
+end
 
       
 % --
@@ -174,8 +190,24 @@ if saveit == 1
   %% create a folder named with relevant parameters
   fprintf(strcat('Subfolder:\n', datadir_specific,'\n'))
   
+
+  % Save unit system
+  if dim_choice == 1 %dimensional units used in solver
+    calc_units = 'Dimensional units used in calculations i.e. solver and bifurcations.';
+  elseif dim_choice == 2 %non-dimensional units used in solver
+    calc_units = 'Non-dimensional units used in calculations i.e. solver and bifurcations.';
+  else
+    calc_units = 'No information was given regarding the use of dimensional or non-dimensional units in options.';
+    warning('No information was given regarding the use of dimensional or non-dimensional units in options. \n This is recorded.');
+  end
+  param.unit_system = [param.unit_system,'\n ',calc_units,'\n']; % Append calculation information.
   
-  % Save parameter index
+  % Save unit system
+  save(strcat(datadir_specific,'unit_system.mat'),'param_units','calc_units')
+  % Save options
+  save(strcat(datadir_specific,'option_choices.mat'),'continue_choice','dim_choice','hist','min_time','max_time','dde23_options')
+
+    % Save parameter index
   save(strcat(datadir_specific,'parameters_index.mat'),'ind_kappa_s','ind_kappa_w','ind_mu_s', ...
 	'ind_mu_w','ind_epsi_ss','ind_epsi_ww','ind_epsi_sw',...
 	'ind_epsi_ws','ind_beta','ind_J_p','ind_eta','ind_tau_r',...
@@ -190,21 +222,8 @@ if saveit == 1
 	'S_in','V','Z_QD','n_bg','tau_sp',...
 	'T_2','A','hbar_omega','epsi_tilda','J',...
 	'feed_phase','feed_ampli','tau_fb','epsi0',...
-	'hbar','e0','c0','par','par_names','par_units')
-  % Save unit system
-  if dim_choice == 1 %dimensional units used in solver
-    calc_units = 'Dimensional units used in calculations i.e. solver and bifurcations.';
-  elseif dim_choice == 2 %non-dimensional units used in solver
-    calc_units = 'Non-dimensional units used in calculations i.e. solver and bifurcations.';
-  else
-    calc_units = 'No information was given regarding the use of dimensional or non-dimensional units in options.';
-    warning('No information was given regarding the use of dimensional or non-dimensional units in options. \n This is recorded.');
-  end
-  
-  % Save unit system
-  save(strcat(datadir_specific,'unit_system.mat'),'param_units','calc_units')
-  % Save options
-  save(strcat(datadir_specific,'option_choices.mat'),'continue_choice','dim_choice','hist','min_time','max_time','dde23_options')
+	'hbar','e0','c0','par','par_names','par_units', ...
+	'param')
 
 elseif saveit == 2
 else

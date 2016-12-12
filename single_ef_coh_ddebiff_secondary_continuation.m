@@ -22,9 +22,9 @@ if continue_choice == 1
 	'max_bound',[ind_feed_ampli,0.99]);
 	
       figure(6);
-      [hbranch,s,f,r]=br_contn(funcs,hbranch,100);
+      [hbranch,s,f,r]=br_contn(funcs,hbranch,150);
       hbranch=br_rvers(hbranch);
-      hbranch=br_contn(funcs,hbranch,100);
+      hbranch=br_contn(funcs,hbranch,150);
       title(strcat('Feedback Ampli vs Feedback Phase - Hopf Bifurcation Continuation'))
       xlabel('Feedback Phase (no units)')
       ylabel('Feedback Ampli (no units)')
@@ -73,9 +73,9 @@ if continue_choice == 1
 	  'max_bound',[ind_feed_ampli,1.2]); %'max_step',[ind_phi,0.1; ind_eta,0.01]);
       
       figure(6);
-      fbranch=br_contn(foldfuncs,fbranch,60);
+      fbranch=br_contn(foldfuncs,fbranch,100);
       fbranch=br_rvers(fbranch);
-      fbranch=br_contn(foldfuncs,fbranch,60);
+      fbranch=br_contn(foldfuncs,fbranch,100);
       title(strcat('Feedback Ampli vs Feedback Phase - Fold/Saddle-Node Bifurcation Continuation'))
       xlabel('Feedback Phase (no units)')
       ylabel('Feedback Ampli (no units)')

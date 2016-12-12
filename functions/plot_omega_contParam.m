@@ -3,6 +3,10 @@ function [  ] = plot_omega_contParam( branch1, nunst_branch1, ...
                                         par_names, par_units )
 %remake '.method.continuation.plot' omega vs continuation param plot
 %   Detailed explanation goes here
+%   
+%   Input: ( branch1, nunst_branch1, ...
+%            ind_hopf, ind_omega, ...
+%            par_names, par_units )
 
 % Prepare figure and vals
 figure;clf;
