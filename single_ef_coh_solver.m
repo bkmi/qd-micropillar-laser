@@ -34,7 +34,7 @@ end
 
 
 %lags, in our case the feedback time
-lags = [tau_fb];
+lags = tau_fb;
 
 %print history
 fprintf(strcat('___history vector \n___hist=',mat2str(hist)))
@@ -77,7 +77,7 @@ ylabel(strcat({'n_r(t) '},n_units))
 
 %print out the guess the solver found for bifurcation!
 fprintf('\n___The solver is recording the following steady state guess for use in bifurcation analysis:')
-xx_guess = sol.y(:,end)
+xx_guess = sol.y(:,end);
 
 % Data structure notes
 
