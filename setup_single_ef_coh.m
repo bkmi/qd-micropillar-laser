@@ -8,7 +8,7 @@ function [ params ] = setup_single_ef_coh( varargin )
 
 
 % Add path, prepare matlab
-addpath('./functions/')
+addpath_setup()
 
 end
 

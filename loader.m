@@ -67,12 +67,7 @@ end
 
 
 % Prepare matlab
-present_working_directory = pwd;
-addpath(strcat(present_working_directory,'/functions/'))
-addpath('~/dde_biftool_v3.1.1/ddebiftool/'); 
-addpath('~/dde_biftool_v3.1.1/ddebiftool_extra_psol/');
-addpath('~/dde_biftool_v3.1.1/ddebiftool_utilities/');
-addpath('~/dde_biftool_v3.1.1/ddebiftool_extra_rotsym');
+addpath_setup()
 
 
 % Load

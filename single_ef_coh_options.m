@@ -1,8 +1,5 @@
-%SELECT DDE_BIFTOOL LOCATION
-addpath('~/dde_biftool_v3.1.1/ddebiftool/'); 
-addpath('~/dde_biftool_v3.1.1/ddebiftool_extra_psol/');
-addpath('~/dde_biftool_v3.1.1/ddebiftool_utilities/');
-addpath('~/dde_biftool_v3.1.1/ddebiftool_extra_rotsym');
+%PREPARE MATLAB
+addpath_setup()
 
 %SELECT UNIT SYSTEM
 %dim_choice = 1; % dimensional units determined in setup_params

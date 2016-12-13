@@ -3,9 +3,7 @@
 %prepare matlab
 clear;                           % clear variables
 close all;                       % close figures
-present_working_directory = pwd;
-addpath(strcat(present_working_directory,'/functions/'))
-clear('present_working_directory')
+addpath_setup()
 
 %Options are important, read them.
 single_ef_coh_options;
