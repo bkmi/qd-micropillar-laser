@@ -124,39 +124,42 @@ hbar = 1.05e-34;                % Js
 e0 = 1.6e-19;                   % C
 c0 = 3.0e8;                     % m s^-1
 % Params from table 1 in Redlich
-kappa_s    = 0.039*(1/1e-12);	% ps^-1 -> 1/s
-kappa_w    = 0.041*(1/1e-12);	% ps^-1 -> 1/s
-mu_s 	   = 3.70*(1e-9*e0);	% nm * e0 -> m*C
-mu_w 	   = 3.75*(1e-9*e0);	% nm * e0 -> m*C
-epsi_ss    = 70e-10;            % m^2 A^-1 V-^1
-epsi_ww    = 50e-10;            % m^2 A^-1 V^-1
-epsi_sw    = 160e-10;           % m^2 A^-1 V^-1
-epsi_ws    = 150e-10;           % m^2 A^-1 V^-1
-beta	   = 5.6e-3;
-J_p 	   = 42.5*1e-6;         % microAmps -> Amps
-eta 	   = 1.28e-3;
-tau_r 	   = 150*(1e-12);       % ps -> s
-S_in 	   = 10^(-16)*(1/1e-12);% m^2 ps^-1 -> m^2 s^-1
-V          = 6.3*(1e-6)^3;      % micro m^3 -> m^3
-Z_QD 	   = 110;
-n_bg 	   = 3.34;
-tau_sp 	   = 1*(1e-9);          % ns -> s
-T_2 	   = 0.33*(1e-12);  	% ps -> s
-A          = 3.14*(1e-6)^2; 	% micro m^2 -> m^2
+default_kappa_s    = 0.039*(1/1e-12);	% ps^-1 -> 1/s
+default_kappa_w    = 0.041*(1/1e-12);	% ps^-1 -> 1/s
+default_mu_s 	   = 3.70*(1e-9*e0);	% nm * e0 -> m*C
+default_mu_w 	   = 3.75*(1e-9*e0);	% nm * e0 -> m*C
+default_epsi_ss    = 70e-10;            % m^2 A^-1 V-^1
+default_epsi_ww    = 50e-10;            % m^2 A^-1 V^-1
+default_epsi_sw    = 160e-10;           % m^2 A^-1 V^-1
+default_epsi_ws    = 150e-10;           % m^2 A^-1 V^-1
+default_beta	   = 5.6e-3;
+default_J_p 	   = 42.5*1e-6;         % microAmps -> Amps
+default_eta 	   = 1.28e-3;
+default_tau_r 	   = 150*(1e-12);       % ps -> s
+default_S_in 	   = 10^(-16)*(1/1e-12);% m^2 ps^-1 -> m^2 s^-1
+default_V          = 6.3*(1e-6)^3;      % micro m^3 -> m^3
+default_Z_QD 	   = 110;
+default_n_bg 	   = 3.34;
+default_tau_sp 	   = 1*(1e-9);          % ns -> s
+default_T_2 	   = 0.33*(1e-12);  	% ps -> s
+default_A          = 3.14*(1e-6)^2; 	% micro m^2 -> m^2
+
+% These two params cannot be altered by the user
 hbar_omega = 1.38*(1.6e-19); 	% eV -> J
-epsi_tilda = epsi0*n_bg*c0;
+%epsi_tilda = epsi0*default_n_bg*c0; % Defined later!!
+
 % Feedback setup
-feed_phase = 0;
-feed_ampli = 0.032;
-tau_fb 	   = 0.8;
+default_feed_phase = 0;
+default_feed_ampli = 0.032;
+default_tau_fb 	   = 0.8;
 % (Physical constants go here in index)
 % Further params
-J          = 2.5*90*(1e-6);     % microAmps -> Amps
-                                % 2.5 * Threshold.
-                                % Threshold from Redlich paper,
-                                % *2.5 from ott10
-alpha_par  = 0;                 % Linewidth Enhancement Factor
-omega = 0;                      % Rotational parameter for DDEBIF
+default_J          = 2.5*90*(1e-6);     % microAmps -> Amps
+                                        % 2.5 * Threshold.
+                                        % Threshold from Redlich paper,
+                                        % *2.5 from ott10
+default_alpha_par  = 0;                 % Linewidth Enhancement Factor
+default_omega      = 0;                 % Rotational parameter for DDEBIF
 
 
 % Unit system
@@ -186,37 +189,37 @@ end
 p = inputParser;
 
 % Add parameters
-addParameter(p,'kappa_s', kappa_s);
-addParameter(p,'kappa_w', kappa_w);
-addParameter(p,'mu_s', mu_s);
-addParameter(p,'mu_w', mu_w);
-addParameter(p,'epsi_ss', epsi_ss);
-addParameter(p,'epsi_ww', epsi_ww);
-addParameter(p,'epsi_sw', epsi_sw);
-addParameter(p,'epsi_ws', epsi_ws);
-addParameter(p,'beta', beta);
-addParameter(p,'J_p', J_p);
-addParameter(p,'eta', eta);
-addParameter(p,'tau_r', tau_r);
-addParameter(p,'S_in', S_in);
-addParameter(p,'V', V);
-addParameter(p,'Z_QD', Z_QD);
-addParameter(p,'n_bg', n_bg);
-addParameter(p,'tau_sp', tau_sp);
-addParameter(p,'T_2', T_2);
-addParameter(p,'A', A);
-addParameter(p,'hbar_omega', hbar_omega);
-addParameter(p,'epsi_tilda', epsi_tilda);
-addParameter(p,'J', J);
-addParameter(p,'feed_phase', feed_phase);
-addParameter(p,'feed_ampli', feed_ampli);
-addParameter(p,'tau_fb', tau_fb);
-addParameter(p,'epsi0', epsi0);
-addParameter(p,'hbar', hbar);
-addParameter(p,'e0', e0);
-addParameter(p,'c0', c0);
-addParameter(p,'alpha_par', alpha_par);
-addParameter(p,'omega', omega);
+addParameter(p,'kappa_s', default_kappa_s);
+addParameter(p,'kappa_w', default_kappa_w);
+addParameter(p,'mu_s', default_mu_s);
+addParameter(p,'mu_w', default_mu_w);
+addParameter(p,'epsi_ss', default_epsi_ss);
+addParameter(p,'epsi_ww', default_epsi_ww);
+addParameter(p,'epsi_sw', default_epsi_sw);
+addParameter(p,'epsi_ws', default_epsi_ws);
+addParameter(p,'beta', default_beta);
+addParameter(p,'J_p', default_J_p);
+addParameter(p,'eta', default_eta);
+addParameter(p,'tau_r', default_tau_r);
+addParameter(p,'S_in', default_S_in);
+addParameter(p,'V', default_V);
+addParameter(p,'Z_QD', default_Z_QD);
+addParameter(p,'n_bg', default_n_bg);
+addParameter(p,'tau_sp', default_tau_sp);
+addParameter(p,'T_2', default_T_2);
+addParameter(p,'A', default_A);
+%addParameter(p,'hbar_omega', hbar_omega);
+%addParameter(p,'epsi_tilda', epsi_tilda);
+addParameter(p,'J', default_J);
+addParameter(p,'feed_phase', default_feed_phase);
+addParameter(p,'feed_ampli', default_feed_ampli);
+addParameter(p,'tau_fb', default_tau_fb);
+%addParameter(p,'epsi0', epsi0);
+%addParameter(p,'hbar', hbar);
+%addParameter(p,'e0', e0);
+%addParameter(p,'c0', c0);
+addParameter(p,'alpha_par', default_alpha_par);
+addParameter(p,'omega', default_omega);
 
 % Add default options so parse doesn't freak out on us.
 addParameter(p,'datadir_parent', 'option');
@@ -228,8 +231,56 @@ addParameter(p,'populate_wrkspc','option');
 % Parse inputs/options.
 parse(p,options)
 
+% Raise flags for values which are not allowed to be changed
+if any(strcmp('epsi0',p.UsingDefaults))
+    error('You cannot alter the value of epsi0')
+elseif any(strcmp('hbar',p.UsingDefaults))
+    error('You cannot alter the value of hbar')
+elseif any(strcmp('e0',p.UsingDefaults))
+    error('You cannot alter the value of e0')
+elseif any(strcmp('c0',p.UsingDefaults))
+    error('You cannot alter the value of c0')
+elseif any(strcmp('hbar_omega',p.UsingDefaults))
+    error('You cannot alter the value of hbar_omega')    
+elseif any(strcmp('epsi_tilda',p.UsingDefaults))
+    error('You cannot alter the value of epsi_tilda')
+end
 
-%% Create parameter struct and arrays
+
+%% Update values, Create parameter struct and arrays
+% Define params from user input + defaults
+% Params from table 1 in Redlich
+kappa_s    = p.Results.kappa_s;
+kappa_w    = p.Results.kappa_w;
+mu_s 	   = p.Results.mu_s;
+mu_w 	   = p.Results.mu_w;
+epsi_ss    = p.Results.epsi_ss;
+epsi_ww    = p.Results.epsi_ww;
+epsi_sw    = p.Results.epsi_sw;
+epsi_ws    = p.Results.epsi_ws;
+beta	   = p.Results.beta;
+J_p 	   = p.Results.J_p;
+eta 	   = p.Results.eta;
+tau_r 	   = p.Results.tau_r;
+S_in 	   = p.Results.S_in;
+V          = p.Results.V;
+Z_QD 	   = p.Results.Z_QD;
+n_bg 	   = p.Results.n_bg;
+tau_sp 	   = p.Results.tau_sp;
+T_2 	   = p.Results.T_2;
+A          = p.Results.A;
+% hbar_omega = 1.38*(1.6e-19); %Defined above
+epsi_tilda = epsi0*n_bg*c0;
+% Feedback setup
+feed_phase = p.Results.feed_phase;
+feed_ampli = p.Results.feed_ampli;
+tau_fb 	   = p.Results.tau_fb;
+% (Physical constants go here in index)
+% Further params
+J          = p.Results.J;       
+alpha_par  = p.Results.alpha_par;
+omega      = p.Results.omega;
+
 % Create parameter array called par
 par_names = {'kappa_s', 'kappa_w', 'mu_s', 'mu_w', ...
     'epsi_ss', 'epsi_ww', 'epsi_sw', 'epsi_ws', ... 
@@ -258,22 +309,22 @@ par_plot_names = {'\kappa_s', '\kappa_w', '\mu_s', '\mu_w', ...
     '\epislon0', 'hbar', 'e_0', 'c_0', ...
     '\alpha' };
 
-par = [p.Results.kappa_s, p.Results.kappa_w, ...
-    p.Results.mu_s, p.Results.mu_w, ...
-    p.Results.epsi_ss, p.Results.epsi_ww, ... 
-    p.Results.epsi_sw, p.Results.epsi_ws, ...
-    p.Results.beta, p.Results.J_p, p.Results.eta, ...
-    p.Results.tau_r, p.Results.S_in, ...
-    p.Results.V, p.Results.Z_QD, p.Results.n_bg, ...
-    p.Results.tau_sp, p.Results.T_2, p.Results.A, ...
-    p.Results.hbar_omega, p.Results.epsi_tilda, J, ...
-    p.Results.feed_phase, p.Results.feed_ampli, p.Results.tau_fb, ...
-    p.Results.epsi0, p.Results.hbar, p.Results.e0, p.Results.c0 ...
-    p.Results.alpha_par ];
+par = [kappa_s, kappa_w, ...
+    mu_s, mu_w, ...
+    epsi_ss, epsi_ww, ... 
+    epsi_sw, epsi_ws, ...
+    beta, J_p, eta, ...
+    tau_r, S_in, ...
+    V, Z_QD, n_bg, ...
+    tau_sp, T_2, A, ...
+    hbar_omega, epsi_tilda, J, ...
+    feed_phase, feed_ampli, tau_fb, ...
+    epsi0, hbar, e0, c0 ...
+    alpha_par ];
 
 % Append rotational parameters for DDEBIF tool
 ind_omega=length(par)+1;
-par(ind_omega) = p.Results.omega;
+par(ind_omega) = omega;
 if options.dimensional == 1
     par_units(ind_omega) = {'????'}; % dimensional units
 elseif options.dimensional == 0
@@ -311,6 +362,7 @@ expA_rot=@(phi) [cos(phi),-sin(phi),0,0; ...
 % Choose system based on dimensional choice
 if options.dimensional == 1
     %define rhs ready ddebif, dimensional units
+    warning('this function has no alpha factor')
     rhs = @(x,p)qd_1ef_sys(x(1,1,:)+1i*x(2,1,:), ...
         x(1,2,:)+1i*x(2,2,:),x(3,1,:),x(3,2,:),x(4,1,:),x(4,2,:),...
         p(1),p(2),p(3),p(4),p(5),p(6),p(7),p(8),p(9),p(10),p(11),...
@@ -319,11 +371,11 @@ if options.dimensional == 1
 
 elseif options.dimensional == 0
     %define rhs ready func, dimensionless
-    rhs = @(x,p)qd_1ef_sys_nondim(x(1,1,:)+1i*x(2,1,:),...
+    rhs = @(x,p)qd_1ef_phaseAmp_nondim(x(1,1,:)+1i*x(2,1,:),...
         x(1,2,:)+1i*x(2,2,:),x(3,1,:),x(3,2,:),x(4,1,:),x(4,2,:),...
         p(1),p(2),p(3),p(4),p(5),p(6),p(7),p(8),p(9),p(10),p(11),...
         p(12),p(13),p(14),p(15),p(16),p(17),p(18),p(19),p(20),p(21),...
-        p(22),p(23),p(24),p(25),p(26),p(27),p(28),p(29));
+        p(22),p(23),p(24),p(25),p(26),p(27),p(28),p(29),p(30));
 else
     error('Your dimensionality choice does not make sense!')
 end
