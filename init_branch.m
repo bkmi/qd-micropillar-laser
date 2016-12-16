@@ -84,7 +84,7 @@ function [ branch_stst, nunst_branch_stst, ind_fold, ind_hopf ] = ...
 p = inputParser;
 
 % General option defaults
-p.addParameter('par_overwrite',0)
+p.addParameter('par_overwrite','n')
 p.addParameter('save_name', 'branch_stst')
 p.addParameter('step_bound_opt', 0)
 p.addParameter('plot_prog', 1)
@@ -101,11 +101,15 @@ p.addParameter('dimensional',0)
 p.KeepUnmatched = true;
 parse(p,varargin{:})
 
-if p.Results.par_overwrite ~= 0
+if numel(p.Results.par_overwrite) == numel(param_struct.values)
     par = p.Results.par_overwrite;
+elseif numel(p.Results.par_overwrite) ~= numel(param_struct.values) && ...
+        ~all(ischar(p.Results.par_overwrite))
+    error('The length of par_overwrite ~= length of param_struct.values')
 else
     par = param_struct.values;
 end
+
 
 % Create step_bound_opt, prepare rotational options
 opt_inputs = {'extra_condition',1,'print_residual_info',0};
