@@ -236,7 +236,7 @@ ylabel(['Omega ', param_struct.units(param_struct.omega.index)])
 
 % Get stability
 branch_stst.method.stability.minimal_real_part = options.minimal_real_part;
-[nunst_branch_stst,~,~,branch_stst] = GetRotStability(branch_stst, funcs);
+[nunst_branch_stst,~,~,branch_stst.point] = GetRotStability(branch_stst, funcs);
 
 
 %% Get fold, hopf bifurcations
