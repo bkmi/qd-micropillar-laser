@@ -6,6 +6,10 @@ function [nunst,dom,triv_defect,points] = GetRotStability( branch, funcs )
 %   GetStability(branch,...
 %       'exclude_trivial',true,'locate_trivial',@(p)0,'funcs',funcs);
 %
+%   Input:
+%       branch, ...
+%       funcs
+%
 %   Output:
 %       nunst
 %       dom

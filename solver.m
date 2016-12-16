@@ -25,6 +25,11 @@ function [ dde23_soln ] = solver( hist, timeSpan, param_struct, ...
 %           param_struct. This is particularly useful if you would like to
 %           make a time series starting at a point along a DDEBIF
 %           bifurcation continuation.
+%
+%           THE ORDER/INDICES DETERMINED IN param_struct MUST BE THE SAME 
+%           AS IN YOUR 'par_overwrite' VALUES OR THERE WILL BE MASSIVE 
+%           ERROR.
+%
 %       'plot' = 1,0
 %           If you choose to plot = 1 then the solver will output the
 %           solver plot. These are timeseries with ef, rho, and n.
@@ -37,7 +42,8 @@ function [ dde23_soln ] = solver( hist, timeSpan, param_struct, ...
 %           The solver will save the dde23_soln as 'dde23_soln_name' in 
 %           a datadir_specific given by master_options. If you have choosen
 %           'save' = 1 without a name given here AND this is not the first
-%           time you've run solver then you will be prompted for a name.
+%           time you've run solver then it won't work.
+%
 %   master_options:
 %       'save' = 0, 1
 %           By default, this is set to 0. When 'save' = 0, the function
@@ -164,13 +170,19 @@ end
 %% Save
 % Save, if necessary
 datadir_specific = options.datadir_specific;
+
+% Where will it save?
+    fprintf(strcat('\n\n Saving in subfolder:\n', datadir_specific,'\n'))
+    
 if options.save == 1 && ...
         ~exist(strcat(datadir_specific,options.save_name,'.mat'),'file')
     save(strcat(datadir_specific,options.save_name),'dde23_soln', ...
         'dde23_ef_units','dde23_time_units','dde23_n_units')
 elseif options.save == 1 && ...
         exist(strcat(datadir_specific,options.save_name,'.mat'),'file')
-    warning('That file already exists. Not saving.')
+    warning('That file already exists. Overwriting.')
+    save(strcat(datadir_specific,options.save_name),'dde23_soln', ...
+        'dde23_ef_units','dde23_time_units','dde23_n_units')
 end
 
 end

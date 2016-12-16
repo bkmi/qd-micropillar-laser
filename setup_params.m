@@ -458,7 +458,7 @@ master_options.dimensional = options.dimensional;
 
 % Save
 if options.save == 1
-    % create a folder named with relevant parameters
+    % Where will it save?
     fprintf(strcat('Subfolder:\n', datadir_specific,'\n'))
 
     % Save parameter index

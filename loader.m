@@ -35,20 +35,26 @@ end
 % Check for datadir_specific
 if isfield(options,'datadir_specific') && isdir(options.datadir_specific)
     datadir_specific = options.datadir_specific;
-elseif isfield(options,'datadir_specific') && ~isdir(options.datadir_specific)
-    warning(strcat(options.datadir_specific, ': Is not a dir. Using regular behavior.'))
+elseif isfield(options,'datadir_specific') && ...
+        ~isdir(options.datadir_specific)
+    warning(strcat(options.datadir_specific, ...
+        ': Is not a dir. Using regular behavior.'))
 end
 % Check for datadir_parent
-if isfield(options,'datadir_parent') && isdir(options.datadir_parent) && ~exist('datadir_specific','var')
+if isfield(options,'datadir_parent') && ...
+        isdir(options.datadir_parent) && ~exist('datadir_specific','var')
     datadir_parent = options.datadir_parent;
-elseif isfield(options,'datadir_parent') && ~isdir(options.datadir_parent) && ~exist('datadir_specific','var')
-    warning(strcat(options.datadir_parent, ': Is not a dir. Using regular behavior.'))
+elseif isfield(options,'datadir_parent') && ...
+        ~isdir(options.datadir_parent) && ~exist('datadir_specific','var')
+    warning(strcat(options.datadir_parent, ...
+        ': Is not a dir. Using regular behavior.'))
 end
 
 
 % Select data folder location
 if ~(exist('datadir_specific','var') || exist('datadir_parent','var'))
-    datadir_parent = '../data_qd-micropillar-laser-ddebif/'; %location of default data parent folder.
+    datadir_parent = ... %location of default data parent folder.
+        '../data_qd-micropillar-laser-ddebif/'; 
 end
 if ~exist('datadir_specific','var')
     directory = dir(datadir_parent);
@@ -81,18 +87,22 @@ if isfield(options,'include')
         include_fileName = options.include{i};
         if any(strcmp(include_fileName,fileNames))
             try
-                data.(include_fileName(1:end-4)) = load(strcat(datadir_specific,include_fileName));
+                data.(include_fileName(1:end-4)) = ...
+                    load(strcat(datadir_specific,include_fileName));
                 disp(include_fileName);
             catch ME
                 switch ME.identifier
                     case 'MATLAB:load:numColumnsNotSame'
-                        warning(strcat(include_fileName,': Failed to load. MATLAB:load:numColumnsNotSame'))
+                        warning(strcat(include_fileName, ... 
+                            [': Failed to load. ', ...
+                            'MATLAB:load:numColumnsNotSame']))
                     otherwise
                         rethrow(ME)
                 end
             end
         elseif ~any(strcmp(include_fileName,fileNames))
-            warning(strcat(include_fileName,': No matches to that filename.'))
+            warning(strcat(include_fileName, ...
+                ': No matches to that filename.'))
         end
     end
 else
@@ -101,11 +111,14 @@ else
         fileName = datadir(fileIndex(i)).name;
         if ~any(strcmp(fileName, options.exclude))
             try
-                data.(fileName(1:end-4)) = load(strcat(datadir_specific,fileName));
+                data.(fileName(1:end-4)) = ... 
+                    load(strcat(datadir_specific,fileName));
             catch ME
                 switch ME.identifier
                     case 'MATLAB:load:numColumnsNotSame'
-                        warning(strcat(fileName,': Failed to load. MATLAB:load:numColumnsNotSame'))
+                        warning(strcat(fileName,...
+                            [': Failed to load. ',...
+                            'MATLAB:load:numColumnsNotSame']))
                     otherwise
                         rethrow(ME)
                 end
@@ -123,25 +136,32 @@ disp(data)
 fprintf('\n\n')
 
 % Would the user like to overwrite files?
-loaded_overwrite_opt = input('\n\nWARNING: You have loaded this data.\nShould scripts overwrite saved results? \n1 = yes \n2 = no \n\n');
+loaded_overwrite_opt = ...
+    input(['\n\nWARNING: You have loaded this data.',...
+    '\nShould scripts overwrite saved results? \n0 = no \n1 = yes \n\n']);
 % Force user to choose: OVERWRITE or not.
 while(1)
-  if loaded_overwrite_opt == 1
-    saveit = 1; %Save and OVERWRITE
-    fprintf('\nScripts will OVERWRITE saved results!!!\n\n')
-    break
-  elseif loaded_overwrite_opt == 2
-    saveit = 2; %Don't save and don't overwrite.
-    fprintf('\nScripts will NOT save results!!!\n\n')
-    break
-  end
+    if loaded_overwrite_opt == 1
+        saveit = 1; %Save and OVERWRITE
+        fprintf('\nScripts will OVERWRITE saved results!!!\n\n')
+        break
+    elseif loaded_overwrite_opt == 0
+        saveit = 0; %Don't save and don't overwrite.
+        fprintf('\nScripts will NOT save results!!!\n\n')
+        break
+    end
 end
-% Transfer to data file, along with datadir
-data.saveit = struct;
-data.saveit.saveit = saveit;
-data.datadir_specific = struct;
-data.datadir_specific.datadir_specific = datadir_specific;
 
+
+% Set master_options based on above selection
+if any(strcmp('master_options',fieldnames(data)))
+    data.master_options.master_options.save = saveit;
+else
+    data.master_options = struct;
+    data.master_options.master_options = struct;
+    data.master_options.master_options.save = saveit;
+    data.master_options.master_options.datadir_specific = datadir_specific;
+end
 
 
 % Did they call with an output?
@@ -152,13 +172,15 @@ switch nargout
     for i=1:length(fieldnames(data))
         varNames = fieldnames(data.(savefileNames{i}));
         for j=1:length(varNames)
-            assignin('base', varNames{j}, data.(savefileNames{i}).(varNames{j}))
+            assignin('base', varNames{j}, ...
+                data.(savefileNames{i}).(varNames{j}))
         end
     end
     case 1 % They called with an output arg, don't load into workspace
         fileData = data;
     otherwise
-        error('Use no output to load into workspace, one output to load into argument')
+        error(['Use no output to load into workspace, ',...
+            'one output to load into argument'])
 end
 
 
