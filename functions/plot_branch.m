@@ -36,8 +36,11 @@ function [ ptBranInd_extrema ] = plot_branch( branch, param_struct, ...
 %           'add_2_gcf' = 0 or Not Called -> New figure.
 %       'color' = [ 0, 0, 0 ] OR 'b', 'y', etc.
 %           The branch will be the given color.
-%       'nunst_color' = nunst_branch
+%       'nunst_color' = nunst_branch OR {nunst_branch, int_max}
 %           Color the dots based on their nunst value. Overrides 'color'.
+%           If you give a cell array with an int_max then the plotter will
+%           plot as if int_max is the highest possible nunst. This is
+%           useful if you want to plot multiple branches on the same plot.
 %       'PlotStyle' = { 'LineStyle', '-', 'Marker', '.' }
 %           Input a cell array which will be passed to the plotter. Usual
 %           plot commands apply.
@@ -75,10 +78,23 @@ end
 if ~isfield(options,'color') && ~isfield(options,'nunst_color')
     options.color = 'b';
 elseif isfield(options,'nunst_color')
-    if length(options.nunst_color) ~= length(branch.point)
-        warning('Len: nunst_branch =/= Len: points. Some points missing.')
-        % Calculate everything from nunst_branch in case the user wants to
-        % avoid plotting some points.
+    if isa(options.nunst_color,'double')
+        % Behavior based on giving a nunst_branch only
+        if length(options.nunst_color) ~= length(branch.point)
+            warning(['Len: nunst_branch =/= Len: points. ',...
+                'Some points missing.'])
+            % Calculate everything from nunst_branch in case the user 
+            % wants to avoid plotting some points.
+        end
+    elseif isa(options.nunst_color,'cell')
+        % Behavior is based on giving a cell array with nunst_branch and
+        % int_max
+        if length(options.nunst_color{1}) ~= length(branch.point)
+            warning(['Len: nunst_branch =/= Len: points. ',...
+                'Some points missing.'])
+            % Calculate everything from nunst_branch in case the user 
+            % wants to avoid plotting some points.
+        end
     end
 end
 
@@ -114,9 +130,21 @@ ptBranInd_extrema.(param_struct.var_names{options.axes_indParam(2)}).Ind = ...
 
 % Plot points
 if isfield(options,'nunst_color')
-    nunst_pts = options.nunst_color;
+    
+    if isa(options.nunst_color,'double')
+        % Behavior based on giving a nunst_branch only
+        nunst_pts = options.nunst_color;
+        max_nunst = max(nunst_pts);
+    elseif isa(options.nunst_color,'cell')
+        % Behavior is based on giving a cell array with nunst_branch and
+        % int_max
+        nunst_pts = options.nunst_color{1};
+        max_nunst = options.nunst_color{2};
+    end
+    
+    
     sel=@(x,i)x(nunst_pts==i);
-    colors = lines(max(nunst_pts)+1);
+    colors = lines(max_nunst+1);
     
     hold on
     for i=0:max(nunst_pts)

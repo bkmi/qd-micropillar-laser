@@ -5,7 +5,7 @@ if continue_choice == 1
   % FEED PHASE Hopf, Fold continuation.
   % HOPF continuation
   hopf_branches = struct;
-  hopf_count = [1:length(ind_hopf)];
+  hopf_count = 1:length(ind_hopf);
   
   figure(6); clf; % prepare figure, remove previous plots
   
@@ -59,7 +59,7 @@ if continue_choice == 1
   % FOLD continuation
   ind_fold=find(abs(diff(nunst_branch1))==1);
   fold_branches = struct;
-  fold_count = [1:length(ind_fold)];
+  fold_count = 1:length(ind_fold);
   
   for i=fold_count
     fold_active_ind = fold_count(i);

@@ -150,7 +150,7 @@ hbar_omega = 1.38*(1.6e-19); 	% eV -> J
 
 % Feedback setup
 default_feed_phase = 0;
-default_feed_ampli = 0.032;
+default_feed_ampli = 0.373;
 default_tau_fb 	   = 0.8;
 % (Physical constants go here in index)
 % Further params
@@ -346,7 +346,8 @@ for i=1:length(param.var_names)
     param.(param.var_names{i}) = struct;
     param.(param.var_names{i}).index = i;
     param.(param.var_names{i}).value = param.values(i);
-    param.(param.var_names{i}).var_name = param.var_names{i};
+    param.(param.var_names{i}).var_name = param.var_names{i};    
+    param.(param.var_names{i}).units = param.units{i};
     param.(param.var_names{i}).plot_name = param.plot_names{i};
 end
 

@@ -14,12 +14,13 @@ function [ branch_stst, nunst_branch_stst, ind_fold, ind_hopf ] = ...
 %       ind_contin_param, ...
 %       branch_length, ...
 %       param_struct, ...
+%       varargin
 %
 %   Output:
 %       branch_stst, ...
 %       nunst_branch_stst, ...
-%	ind_fold, ...
-%	ind_hopf
+%       ind_fold, ...
+%       ind_hopf
 %
 %   Options:
 %       'step_bound_opt' = {'step', 0.1, ... 
@@ -57,7 +58,7 @@ function [ branch_stst, nunst_branch_stst, ind_fold, ind_hopf ] = ...
 %           init_branch will save the branch as 'branch_name' in 
 %           a datadir_specific given by master_options. If you have choosen
 %           'save' = 1 without a name given here AND this is not the first
-%           time you've run solver then  it won't work. Defaults to
+%           time you've run solver then it will overwrite. Defaults to
 %           'branch_stst'
 %
 %       'opt_inputs' = { 'extra_condition', [1], ...
@@ -114,13 +115,15 @@ end
 % Create step_bound_opt, prepare rotational options
 opt_inputs = {'extra_condition',1,'print_residual_info',0};
 
-if iscell(p.Results.step_bound_opt)
+if ~any(strcmp('step_bound_opt',p.UsingDefaults))
+    % If the user input step_bound_opt
     step_bound_opt = p.Results.step_bound_opt;
 else
+    % If the user didn't input step_bound_opt
     % Create defaults for feed_phase
     if ind_contin_param == param_struct.feed_phase.index
         p.addParameter('step',2*pi/64)
-        p.addParameter('max_step',[ind_contin_param,(0.25)*2*pi/64])
+        p.addParameter('max_step',[ind_contin_param,2*pi/64])
         p.addParameter('newton_max_iterations',10)
         p.addParameter('max_bound',[ind_contin_param,6*pi])
 
@@ -162,7 +165,7 @@ else
     p.KeepUnmatched = false;
     parse(p,varargin{:})
 
-    % Create rotational options
+    % Create step_bound_opt
     step_bound_flags = {};
     step_bound_vals  = {};
 
@@ -252,9 +255,10 @@ ind_hopf = find(abs(diff(nunst_branch_stst))==2);
 % Save, if necessary
 datadir_specific = options.datadir_specific;
 
-% Where will it save?
+if options.save == 1
+    % Where will it save?
     fprintf(strcat('\n\n Saving in subfolder:\n', datadir_specific,'\n'))
-
+end
 if options.save == 1 && ...
         ~exist(strcat(datadir_specific,options.save_name,'.mat'),'file')
     save(strcat(datadir_specific,options.save_name),...
