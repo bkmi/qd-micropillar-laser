@@ -9,7 +9,8 @@ dde23_soln = solver([1e-9;0;0;0], [0,20], param, master_options);
 % Create initial branch
 [branch_stst, nunstBranch_stst, ind_fold, ind_hopf] = ... 
     init_branch(funcs, ...
-    dde23_soln.y(:,end), ind_feed_phase, 300, param, master_options);
+    dde23_soln.y(:,end), ind_feed_phase, 2000, param, ...
+    'max_step',[ind_feed_phase, (1.5)*pi/64], master_options);
 
 %% Create structs for fold_branches and hopf_branches
 % Fold

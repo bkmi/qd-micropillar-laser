@@ -125,7 +125,8 @@ else
         p.addParameter('step',2*pi/64)
         p.addParameter('max_step',[ind_contin_param,2*pi/64])
         p.addParameter('newton_max_iterations',10)
-        p.addParameter('max_bound',[ind_contin_param,6*pi])
+        p.addParameter('max_bound',[ind_contin_param, 30*pi])
+        p.addParameter('min_bound',[ind_contin_param, -30*pi])
 
         %{
         step_bound_opt_PHASE = { 'step',2*pi/64,...
