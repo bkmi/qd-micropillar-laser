@@ -33,3 +33,9 @@ end
 plot_branch(branch_stst, param, ...
             'add_2_gcf', 1, 'color','g', ...
             'axes_indParam', [ ind_feed_phase, ind_feed_ampli ])
+        
+
+% Plot omega vs continued param with nunst
+plot_branch(branch_stst,param, ...
+    'nunst_color',nunstBranch_stst)
+

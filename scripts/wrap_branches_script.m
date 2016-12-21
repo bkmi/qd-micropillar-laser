@@ -58,3 +58,10 @@ end
 plot_branch(wrap_branch_stst, param, ...
             'add_2_gcf', 1, 'color','g', ...
             'axes_indParam', [ ind_feed_phase, ind_feed_ampli ])
+        
+        
+%% Create omega vs feed_phase wrapped
+% Wrap branch_stst
+wrapBranch_stst = wrap_to_2pi(branch_stst, ind_feed_phase);
+
+plot_branch(wrapBranch_stst, param, 'nunst_color', nunstBranch_stst)
