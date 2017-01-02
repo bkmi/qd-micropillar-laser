@@ -64,4 +64,4 @@ plot_branch(wrap_branch_stst, param, ...
 % Wrap branch_stst
 wrapBranch_stst = wrap_to_2pi(branch_stst, ind_feed_phase);
 
-plot_branch(wrapBranch_stst, param, 'nunst_color', nunstBranch_stst)
+plot_branch(wrapBranch_stst, param, 'nunst_color', nunst_branch_stst)

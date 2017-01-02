@@ -23,14 +23,14 @@ function [ out_branch ] = bifurContin_FoldHopf( ...
 %       'step_bound_opt' = {'step',0.1
 %                           'max_step', ...
 %                           [ind_contin_param(1),0.1, ...
-%                           ind_contin_param(2),1])
-%                           'newton_max_iterations',15)
+%                           ind_contin_param(2),1]
+%                           'newton_max_iterations',15
 %                           'max_bound',...
 %                           [ind_contin_param(1),10, ...
-%                           ind_contin_param(2),10])
+%                           ind_contin_param(2),10]
 %                           'min_bound',...
 %                           [ind_contin_param(1),-10, ...
-%                           ind_contin_param(2),-10])
+%                           ind_contin_param(2),-10]
 %           Calling this will overwrite the default step_bound_opt. You can
 %           also call each of these parameters by name to overwrite a
 %           single parameter. If you call a cell array then that cell array
@@ -83,6 +83,7 @@ p.addParameter('dimensional',0)
 
 % first parse
 p.KeepUnmatched = true;
+p.PartialMatching = false;
 parse(p,varargin{:})
 
 % Create step_bound_opt
@@ -98,16 +99,16 @@ else
         % Create defaults for feed_phase, feed_ampli
         % Notice ind_contin_param(1) == feed_phase
         % and ind_contin_param(2) == feed_ampli
-        p.addParameter('step',2*pi/64)
+        p.addParameter('step',pi/32)
         p.addParameter('max_step', ...
             [ind_contin_param(1),2*pi/64, ...
             ind_contin_param(2),0.0075])
         p.addParameter('newton_max_iterations',15)
         p.addParameter('max_bound',...
-            [ind_contin_param(1),100*pi, ...
+            [ind_contin_param(1),25*pi, ...
             ind_contin_param(2),1.1])
         p.addParameter('min_bound',...
-            [ind_contin_param(1),-100*pi, ...
+            [ind_contin_param(1),-25*pi, ...
             ind_contin_param(2),-0.1])
 
     elseif all( ind_contin_param == ...
@@ -143,7 +144,7 @@ else
             ind_contin_param(2),-10])
 
     end
-
+    
     % Second parse to finalize options
     p.KeepUnmatched = false;
     parse(p,varargin{:})
@@ -204,8 +205,8 @@ end
 % Make final options
 options = p.Results;
 
-% Set save to 1 when the user called 'save_name' and wrote something unique
-if ~strcmp(options.save_name, 'branch_FoldHopf')
+% Set save to 1 when the user called 'save_name'
+if ~any(strcmp('save_name',p.UsingDefaults))
     options.save = 1;
 end
 
@@ -252,8 +253,10 @@ end
 % Save, if necessary
 datadir_specific = options.datadir_specific;
 
-% Where will it save?
+if options.save == 1
+    % Where will it save?
     fprintf(strcat('\n\n Saving in subfolder:\n', datadir_specific,'\n'))
+end
 
 if options.save == 1 && ...
         ~exist(strcat(datadir_specific,options.save_name,'.mat'),'file')

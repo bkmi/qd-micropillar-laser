@@ -37,5 +37,5 @@ plot_branch(branch_stst, param, ...
 
 % Plot omega vs continued param with nunst
 plot_branch(branch_stst,param, ...
-    'nunst_color',nunstBranch_stst)
+    'nunst_color',nunst_branch_stst)
 
