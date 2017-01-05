@@ -71,8 +71,12 @@ elseif options.add_2_gcf==1
     hold on
 elseif options.add_2_gcf==0
     figure; clf;
+elseif isa(options.add_2_gcf,'struct')
+    % This part is where we parse the object handle
+    error('This is not supported yet.')
 else
-    error('add_2_gcf can either equal 1 or 0. Otherwise, do not call it.')
+    error(['add_2_gcf can either equal 1, 0,',...
+        'or a obj_struct. Otherwise, do not call it.'])
 end
 
 if ~isfield(options,'color') && ~isfield(options,'nunst_color')
@@ -148,15 +152,22 @@ if isfield(options,'nunst_color')
     
     hold on
     for i=0:max(nunst_pts)
-    plot(sel(x_param_vals,i),sel(y_param_vals,i), ...
-        'Color',colors(i+1,:), options.PlotStyle{:} );
+        plot(sel(x_param_vals,i),sel(y_param_vals,i), ...
+            'Color',colors(i+1,:), options.PlotStyle{:} );
     end
     hold off
-      
+    
+    %{
     for i=unique(nunst_pts)
         unique_nunst_vals = num2str(i);
     end
-    legend(unique_nunst_vals)
+    %legend(unique_nunst_vals)
+    %}
+    
+    colormap(colors)
+    colorbar('YTickLabel', ...
+        [{(max_nunst/10)-1}, ...
+        num2cell((max_nunst/10)-1 + max_nunst/10:max_nunst/10:max_nunst+1)])
     
 else
     plot(x_param_vals,y_param_vals, ...

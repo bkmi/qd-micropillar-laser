@@ -1,3 +1,17 @@
+%% Info
+%{
+
+This script, if run from the begining will create an initial branch, then
+create the fold branches that come off of it.
+
+Next, or if the script is run from "%% Determine where we are by plotting."
+the script will plot the fold and init branches and let you start new stst
+branches in a different direction. If you have already defined
+hopf_branches then they will also be plotted. (for reference.)
+
+%}
+
+
 %% Create initial branch
 
 % Setup parameters, save them
@@ -73,6 +87,20 @@ for i = 1:numel(namesFoldBranches)
     
 end
 
+if exist('hopf_branches', 'var') && isa(hopf_branches, 'struct')
+    % Plot each hopf_branch
+    namesHopfBranches = fieldnames(hopf_branches);
+    for i = 1:numel(namesHopfBranches)
+        % Add each hopf_branch
+        if ~any(strcmp('error', ... 
+                fieldnames(hopf_branches.(namesHopfBranches{i}))))
+            % Only plot hopf_branches that DO NOT have errors
+            plot_branch(hopf_branches.(namesHopfBranches{i}), param, ...
+                'add_2_gcf', 1, 'color','c')
+        end
+    end
+end
+
 % Ask user how many vertical continuations they'd like to make
 lengthVert=input('How many continuations in the feed_ampli direction? \n');
 feedAmpContinPts = zeros(lengthVert,1);
@@ -119,7 +147,7 @@ save([master_options.datadir_specific,'feedAmp_branches'],'feedAmp_branches')
 
 %% Plot with the new params
 
-figure
+figure % New figure
 
 % Plot each fold_branch
 namesFoldBranches = fieldnames(fold_branches);
@@ -159,6 +187,4 @@ for i = 1:numel(namesFeedAmp_branch)
     
 end
 
-
-
-
+%colorbar % Show colorbar
