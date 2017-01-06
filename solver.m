@@ -40,9 +40,7 @@ function [ dde23_soln ] = solver( hist, timeSpan, param_struct, ...
 %         https://www.mathworks.com/help/matlab/ref/ddeset.html#f81-1031913
 %       'save_name' = 'dde23_soln_name'
 %           The solver will save the dde23_soln as 'dde23_soln_name' in 
-%           a datadir_specific given by master_options. If you have choosen
-%           'save' = 1 without a name given here AND this is not the first
-%           time you've run solver then it won't work.
+%           a datadir_specific given by master_options. It will overwrite.
 %
 %   master_options:
 %       'save' = 0, 1
@@ -94,11 +92,13 @@ else
     par = options.par_overwrite;
 end
 
-% Set save to 1 when the user called 'save_name' and wrote something unique
-if ~strcmp(options.save_name, 'dde23_soln')
+%{
+% Disabled because it causes problems with timeSeries_atBranchPt
+% Set save to 1 when the user called 'save_name'
+if ~any(strcmp('save_name',p.UsingDefaults))
     options.save = 1;
 end
-
+%}
 
 % Organize behavior from options
 % DIMENSION HANDLER
@@ -155,8 +155,18 @@ end
 
 %% Solver + Plotter
 % Setup/use dde23 solver
+if isa(hist,'function_handle')
+    % If hist is a function
+    fprintf('History vector is a function. \n')
+    
+elseif isa(hist,'double')
+    % If hist is a vector
+    fprintf(strcat('History vector: \nhist=',mat2str(hist),'\n'))
+else
+    disp('I do not know what type hist is.')
+end
+
 lags = par(param_struct.tau_fb.index); % lags == feedback time
-fprintf(strcat('History vector: \nhist=',mat2str(hist),'\n'))
 dde23_soln = dde23(@(t,y,z)sys_4solver([y,z]),...
     lags,hist,timeSpan, options.dde23_options);
 

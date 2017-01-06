@@ -1,7 +1,7 @@
 %% Create initial branch and extend bifurcations from there. Basic setup.
 
 % Setup parameters, save them
-setup_params('save',1,'feed_ampli',0.373, 'alpha_par',1.5)
+setup_params('save',1,'feed_ampli',0.373, 'alpha_par',1)
 
 % Create and save turn on time series
 dde23_soln = solver([1e-9;0;0;0], [0,20], param, master_options);

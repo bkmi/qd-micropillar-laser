@@ -11,9 +11,23 @@ function [  ] = plot_solver( sol, J, hist, time_units, ef_units, n_units )
 figure; clf;
 subplot(2,2,[1,2]);
 plot(sol.x,arrayfun(@(x)norm(x),sol.y(1,:)+1i*sol.y(2,:)))
-title({'Electric Field Amplitude vs Time '; ...
-    strcat('with J=',num2str(J,'%1.1e'),'A');...
-    strcat('hist=[re(E),im(E),\rho,n_r]=', mat2str(hist))})
+if isa(hist,'function_handle')
+    % If hist is a function
+    title({'Electric Field Amplitude vs Time '; ...
+        strcat('with J=',num2str(J,'%1.1e'),'A');...
+        strcat('hist=[re(E),im(E),\rho,n_r]=(a function)')})
+    
+elseif isa(hist,'double')
+    % If hist is a vector
+    title({'Electric Field Amplitude vs Time '; ...
+        strcat('with J=',num2str(J,'%1.1e'),'A');...
+        strcat('hist=[re(E),im(E),\rho,n_r]=', mat2str(hist))})
+else
+    title({'Electric Field Amplitude vs Time '; ...
+        strcat('with J=',num2str(J,'%1.1e'),'A');...
+        strcat('hist=[re(E),im(E),\rho,n_r]=???')})
+end
+
 xlabel(strcat({'Time '}, time_units))
 ylabel(strcat({'|E(t)| '}, ef_units))
 
