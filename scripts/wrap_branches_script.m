@@ -38,7 +38,7 @@ wrap_branch_stst = wrap_to_2pi(branch_stst,ind_feed_phase);
 
 %% Plot wrapped
 
-figure
+wrapPlot = figure;
 
 namesWrapBranches = fieldnames(wrap_branches);
 for i = 1:numel(namesWrapBranches)
@@ -46,22 +46,33 @@ for i = 1:numel(namesWrapBranches)
     if any(1 == strfind(namesWrapBranches{i},'f'))
         % Plot fold only
         plot_branch(wrap_branches.(namesWrapBranches{i}), param, ...
-            'add_2_gcf', 1, 'color','r')
+            'add_2_gcf', 1, 'color','r');
     elseif any(1 == strfind(namesWrapBranches{i},'h'))
         % Plot hopf only
         plot_branch(wrap_branches.(namesWrapBranches{i}), param, ...
-            'add_2_gcf', 1, 'color','c')
+            'add_2_gcf', 1, 'color','c');
     end
 end
 
 % Plot init_branch.
 plot_branch(wrap_branch_stst, param, ...
             'add_2_gcf', 1, 'color','g', ...
-            'axes_indParam', [ ind_feed_phase, ind_feed_ampli ])
+            'axes_indParam', [ ind_feed_phase, ind_feed_ampli ]);
         
-        
+% Save and print to pdf
+set(wrapPlot,'PaperType','a4')
+set(wrapPlot,'PaperOrientation','landscape');
+set(wrapPlot,'PaperUnits','normalized');
+set(wrapPlot,'PaperPosition', [0 0 1 1]);
+wrapPlotFileName = [master_options.datadir_specific,'wrapPlot.pdf'];
+print(wrapPlot,wrapPlotFileName,'-dpdf')
+
+
 %% Create omega vs feed_phase wrapped
 % Wrap branch_stst
 wrapBranch_stst = wrap_to_2pi(branch_stst, ind_feed_phase);
 
-plot_branch(wrapBranch_stst, param, 'nunst_color', nunst_branch_stst)
+plot_branch(wrapBranch_stst, param, 'nunst_color', nunst_branch_stst);
+
+
+

@@ -1,4 +1,5 @@
-function [  ] = plot_solver( sol, J, hist, time_units, ef_units, n_units )
+function [ figHandle ] = plot_solver( sol, J, hist, ...
+    time_units, ef_units, n_units )
 %Input 'sol' struct from dde23, Generates new figure in solver plot style.
 %   Input:
 %       sol, ...
@@ -8,7 +9,8 @@ function [  ] = plot_solver( sol, J, hist, time_units, ef_units, n_units )
 %       ef_units_str, ...
 %       n_units_str
 
-figure; clf;
+figHandle = figure;
+clf;
 subplot(2,2,[1,2]);
 plot(sol.x,arrayfun(@(x)norm(x),sol.y(1,:)+1i*sol.y(2,:)))
 if isa(hist,'function_handle')

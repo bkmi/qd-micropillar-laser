@@ -2,7 +2,8 @@
 %{
 
 This script, if run from the begining will create an initial branch, then
-create the fold branches that come off of it.
+create the fold branches that come off of it. However, that section is
+commented out now. At this point you should load first, script second.
 
 Next, or if the script is run from "%% Determine where we are by plotting."
 the script will plot the fold and init branches and let you start new stst
@@ -11,7 +12,7 @@ hopf_branches then they will also be plotted. (for reference.)
 
 %}
 
-
+%{
 %% Create initial branch
 
 % Setup parameters, save them
@@ -70,21 +71,28 @@ end
 
 % Save fold branches
 save([master_options.datadir_specific,'fold_branches'],'fold_branches')
+%}
 
 
 %% Determine where we are by plotting.
 
-% Plot each fold_branch
-namesFoldBranches = fieldnames(fold_branches);
-for i = 1:numel(namesFoldBranches)
-    % Add each fold_branch
-    if ~any(strcmp('error',...
-            fieldnames(fold_branches.(namesFoldBranches{i}))))
-        % Only plot fold_branches that DO NOT have errors
-        plot_branch(fold_branches.(namesFoldBranches{i}), param, ...
-            'add_2_gcf', 1, 'color','r');
+figure % New figure
+set(gcf, 'Position', [399   703   560   420])
+
+
+if exist('fold_branches', 'var') && isa(fold_branches, 'struct')
+    % Plot each fold_branch
+    namesFoldBranches = fieldnames(fold_branches);
+    for i = 1:numel(namesFoldBranches)
+        % Add each fold_branch
+        if ~any(strcmp('error',...
+                fieldnames(fold_branches.(namesFoldBranches{i}))))
+            % Only plot fold_branches that DO NOT have errors
+            plot_branch(fold_branches.(namesFoldBranches{i}), param, ...
+                'add_2_gcf', 1, 'color','r');
+        end
+
     end
-    
 end
 
 if exist('hopf_branches', 'var') && isa(hopf_branches, 'struct')
@@ -96,7 +104,7 @@ if exist('hopf_branches', 'var') && isa(hopf_branches, 'struct')
                 fieldnames(hopf_branches.(namesHopfBranches{i}))))
             % Only plot hopf_branches that DO NOT have errors
             plot_branch(hopf_branches.(namesHopfBranches{i}), param, ...
-                'add_2_gcf', 1, 'color','c')
+                'add_2_gcf', 1, 'color','c');
         end
     end
 end
@@ -147,19 +155,36 @@ save([master_options.datadir_specific,'feedAmp_branches'],'feedAmp_branches')
 
 %% Plot with the new params
 
-figure % New figure
+feedAmpContFig = figure; % New figure
+set(gcf, 'Position', [399   201   560   420])
 
-% Plot each fold_branch
-namesFoldBranches = fieldnames(fold_branches);
-for i = 1:numel(namesFoldBranches)
-    % Add each hopf_branch
-    if ~any(strcmp('error',...
-            fieldnames(fold_branches.(namesFoldBranches{i}))))
-        % Only plot fold_branches that DO NOT have errors
-        plot_branch(fold_branches.(namesFoldBranches{i}), param, ...
-            'add_2_gcf', 1, 'color','r');
+if exist('fold_branches', 'var') && isa(fold_branches, 'struct')
+    % Plot each fold_branch
+    namesFoldBranches = fieldnames(fold_branches);
+    for i = 1:numel(namesFoldBranches)
+        % Add each hopf_branch
+        if ~any(strcmp('error',...
+                fieldnames(fold_branches.(namesFoldBranches{i}))))
+            % Only plot fold_branches that DO NOT have errors
+            plot_branch(fold_branches.(namesFoldBranches{i}), param, ...
+                'add_2_gcf', 1, 'color','r');
+        end
+
     end
-    
+end
+
+if exist('hopf_branches', 'var') && isa(hopf_branches, 'struct')
+    % Plot each hopf_branch
+    namesHopfBranches = fieldnames(hopf_branches);
+    for i = 1:numel(namesHopfBranches)
+        % Add each hopf_branch
+        if ~any(strcmp('error', ... 
+                fieldnames(hopf_branches.(namesHopfBranches{i}))))
+            % Only plot hopf_branches that DO NOT have errors
+            plot_branch(hopf_branches.(namesHopfBranches{i}), param, ...
+                'add_2_gcf', 1, 'color','c');
+        end
+    end
 end
 
 % Plot init_branch
@@ -187,4 +212,11 @@ for i = 1:numel(namesFeedAmp_branch)
     
 end
 
-%colorbar % Show colorbar
+
+% Save and print to pdf
+set(feedAmpContFig,'PaperType','a4')
+set(feedAmpContFig,'PaperOrientation','landscape');
+set(feedAmpContFig,'PaperUnits','normalized');
+set(feedAmpContFig,'PaperPosition', [0 0 1 1]);
+feedAmpPlotFileName = [master_options.datadir_specific,'FeedAmpPlot.pdf'];
+print(feedAmpContFig,feedAmpPlotFileName,'-dpdf')

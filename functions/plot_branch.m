@@ -1,4 +1,5 @@
-function [ ptBranInd_extrema ] = plot_branch( branch, param_struct, ...
+function [ ptBranInd_extrema, figHandle ] = plot_branch( branch, ...
+    param_struct, ...
     varargin )
 %Plot a branch (by default) along its two free continuation parameters.
 %   Considering we are using rotational symmetry stst will also work since
@@ -65,12 +66,14 @@ end
 
 if ~isfield(options,'add_2_gcf')
     options.add_2_gcf = 0;
-    figure; clf;
+    figHandle = figure;
+    clf;
 elseif options.add_2_gcf==1
-    figure(gcf);
+    figHandle = figure(gcf);
     hold on
 elseif options.add_2_gcf==0
-    figure; clf;
+    figHandle = figure;
+    clf;
 elseif isa(options.add_2_gcf,'struct')
     % This part is where we parse the object handle
     error('This is not supported yet.')
@@ -165,10 +168,12 @@ if isfield(options,'nunst_color')
     %}
     
     colormap(colors)
+    colorbar('YTickLabel','Off')
+    %{
     colorbar('YTickLabel', ...
         [{(max_nunst/10)-1}, ...
         num2cell((max_nunst/10)-1 + max_nunst/10:max_nunst/10:max_nunst+1)])
-    
+    %}
 else
     plot(x_param_vals,y_param_vals, ...
         'Color',options.color, options.PlotStyle{:} );
