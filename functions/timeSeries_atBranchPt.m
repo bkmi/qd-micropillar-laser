@@ -50,7 +50,7 @@ p = inputParser;
 % General option defaults
 p.addParameter('turn_on', 0)
 p.addParameter('plot', 0)
-p.addParameter('dde23_options', ddeset())%ddeset('RelTol',10^-8)
+p.addParameter('dde23_options', ddeset('RelTol',10^-8))
 p.addParameter('save_name', 'timeSeries_atBranchPt')
 
 % Master option defaults
