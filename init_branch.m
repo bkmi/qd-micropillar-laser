@@ -113,8 +113,13 @@ end
 
 
 % Create step_bound_opt, prepare rotational options
-opt_inputs = {'extra_condition',1,'print_residual_info',0};
-
+if exist(opt_inputs) == 1
+    % Do nothing, already defined
+else
+    % Make it!
+    opt_inputs = {'extra_condition',1,'print_residual_info',0};
+end
+    
 if ~any(strcmp('step_bound_opt',p.UsingDefaults))
     % If the user input step_bound_opt
     step_bound_opt = p.Results.step_bound_opt;

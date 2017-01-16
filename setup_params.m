@@ -385,6 +385,7 @@ end
 funcs = set_rotfuncs('sys_rhs',rhs, ... 
     'rotation',A_rot,'exp_rotation',expA_rot, ... 
     'sys_tau',qd_1ef_sys_tau,'x_vectorized',true);
+    % ,'sys_cond', @sys_cond_file
 opt_inputs = {'extra_condition',1,'print_residual_info',0};
 
 %% Saving Section
