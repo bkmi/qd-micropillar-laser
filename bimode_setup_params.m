@@ -381,52 +381,10 @@ else
     error('Your dimensionality choice does not make sense!')
 end
 
-%% EDITING HERE, MADE IT MY OWN ROT
-
 % Prepare 'funcs' for DDEBIF
-
-funcs = set_funcs( ...
-    'sys_rhs',rhs, ... 'rotation',A_rot, ...'exp_rotation',expA_rot, ... 
-    'sys_tau',@()qd_1ef_sys_tau, ...
-    'x_vectorized',true); %, ...
-%    'sys_cond', @(point)self_rot_cond(point,A_rot) );
-
-% rotation: [4x4 double]
-% exp_rotation: @(phi)
-%     [cos(phi),-sin(phi),0,0;sin(phi),cos(phi),0,0;0,0,1,0;0,0,0,1]
-% orig_rhs: @(x,p)reshape(funcs.sys_rhs(x,p),[size(x,1),1,size(x,3)])
-% orig_deri: @(x,p,nx,np,v)df_deriv(funcs,x,p,nx,np,v)
-% orig_cond: @dummy_cond
-% 
-% -
-% 
-% funcs.sys_rhs:
-%     @(xx,p)rot_rhs(xx,p,funcs.rotation,funcs.exp_rotation, ...
-%         funcs.orig_rhs,funcs.sys_tau,funcs.x_vectorized)
-% funcs.orig_rhs = funcs.sys_rhs;
-% sys_deri: @(x,p,nx,np,v)df_deriv(funcs,x,p,nx,np,v,options.hjac)
-% sys_cond: @(p)rot_cond(p,funcs.rotation,funcs.orig_cond)
-
-% Save the defaults
-funcs.orig_rhs = funcs.sys_rhs;
-funcs.orig_deri = funcs.sys_deri;
-
-% Add mine
-funcs.rotation = A_rot;
-funcs.exp_rotation = expA_rot;
-funcs.sys_rhs = @(xx,p)self_rot_rhs(xx,p, ...
-    funcs.rotation,funcs.exp_rotation, ...
-    funcs.orig_rhs,funcs.sys_tau,funcs.x_vectorized);
-funcs.sys_deri = @(x,p,nx,np,v)df_deriv(funcs,x,p,nx,np,v,1e-6); % notice 1e-6 == options.hjac
-funcs.sys_cond = @(p)self_rot_cond(p,funcs.rotation);
-
-% funcs = set_rotfuncs( ...
-%     'sys_rhs',rhs, ... 
-%     'rotation',A_rot, ...
-%     'exp_rotation',expA_rot, ... 
-%     'sys_tau',qd_1ef_sys_tau, ...
-%     'x_vectorized',true);
-%     % ,'sys_cond', @sys_cond_file
+funcs = set_rotfuncs('sys_rhs',rhs, ... 
+    'rotation',A_rot,'exp_rotation',expA_rot, ... 
+    'sys_tau',qd_1ef_sys_tau,'x_vectorized',true);
 opt_inputs = {'extra_condition',1,'print_residual_info',0};
 
 %% Saving Section
@@ -460,7 +418,7 @@ end
 
 % Folder shall be named below:
 datadir_specific = strcat(options.datadir_parent, ... 
-    'ATEST_',mode_report,dimension_report,current_report, ...
+    mode_report,dimension_report,current_report, ...
     'FEED_',feed_tau_report,feed_amp_report, ...
     alpha_par_report, '/');
 

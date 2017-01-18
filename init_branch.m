@@ -85,12 +85,13 @@ function [ branch_stst, nunst_branch_stst, ind_fold, ind_hopf ] = ...
 p = inputParser;
 
 % General option defaults
-p.addParameter('par_overwrite','n')
-p.addParameter('save_name', 'branch_stst')
 p.addParameter('step_bound_opt', 0)
-p.addParameter('plot_prog', 1)
+p.addParameter('par_overwrite','n')
 p.addParameter('reverse',0)
+p.addParameter('plot_prog', 1)
 p.addParameter('minimal_real_part', -0.5)
+p.addParameter('save_name', 'branch_stst')
+p.addParameter('opt_inputs',{'extra_condition',1,'print_residual_info',0})
 
 % Master option defaults
 p.addParameter('save',0)
@@ -112,9 +113,7 @@ else
 end
 
 
-% Create step_bound_opt, prepare rotational options
-opt_inputs = {'extra_condition',1,'print_residual_info',0};
-
+% Create step_bound_opt, prepare rotational options    
 if ~any(strcmp('step_bound_opt',p.UsingDefaults))
     % If the user input step_bound_opt
     step_bound_opt = p.Results.step_bound_opt;
@@ -219,7 +218,7 @@ ind_contin_param_w_omega = [ind_contin_param,param_struct.omega.index];
     'corpar',param_struct.omega.index,...
     'x',guess, ...
     'parameter',par,...
-    opt_inputs{:},...
+    options.opt_inputs{:},...
     step_bound_opt{:});
 
 % Plot settings
