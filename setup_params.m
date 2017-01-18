@@ -83,40 +83,6 @@ end
 
 
 %% Define default params/index
-
-
-%define indicies
-ind_kappa_s     = 1;
-ind_kappa_w     = 2;
-ind_mu_s        = 3;
-ind_mu_w        = 4;
-ind_epsi_ss     = 5;
-ind_epsi_ww     = 6;
-ind_epsi_sw     = 7;
-ind_epsi_ws     = 8;
-ind_beta        = 9;
-ind_J_p         = 10;
-ind_eta         = 11;
-ind_tau_r       = 12;
-ind_S_in        = 13;
-ind_V           = 14;
-ind_Z_QD        = 15;
-ind_n_bg        = 16;
-ind_tau_sp      = 17;
-ind_T_2         = 18;
-ind_A           = 19;
-ind_hbar_omega	= 20;
-ind_epsi_tilda	= 21;
-ind_J           = 22;
-ind_feed_phase  = 23;
-ind_feed_ampli  = 24;
-ind_tau_fb      = 25;
-ind_epsi0       = 26;
-ind_hbar        = 27;
-ind_e0          = 28;
-ind_c0          = 29;
-ind_alpha_par   = 30;
-
 % Define params in kg, m, s aka SI UNITS.
 % Physical constants
 epsi0 = 8.85e-12;               % F m^-1 == J V^-2 m^-1
@@ -159,7 +125,8 @@ default_J          = 2.5*90*(1e-6);     % microAmps -> Amps
                                         % Threshold from Redlich paper,
                                         % *2.5 from ott10
 default_alpha_par  = 0;                 % Linewidth Enhancement Factor
-default_omega      = 0;                 % Rotational parameter for DDEBIF
+default_omega1      = 0;                 % Rotational parameter for DDEBIF
+default_omega2      = 0;                 % Rotational parameter for DDEBIF
 
 
 % Unit system
@@ -219,7 +186,8 @@ addParameter(p,'tau_fb', default_tau_fb);
 %addParameter(p,'e0', e0);
 %addParameter(p,'c0', c0);
 addParameter(p,'alpha_par', default_alpha_par);
-addParameter(p,'omega', default_omega);
+addParameter(p,'omega1', default_omega1);
+addParameter(p,'omega2', default_omega2);
 
 % Add default options so parse doesn't freak out on us.
 addParameter(p,'datadir_parent', 'option');
@@ -279,7 +247,8 @@ tau_fb 	   = p.Results.tau_fb;
 % Further params
 J          = p.Results.J;       
 alpha_par  = p.Results.alpha_par;
-omega      = p.Results.omega;
+omega1      = p.Results.omega1;
+omega2      = p.Results.omega2;
 
 % Create parameter array called par
 par_names = {'kappa_s', 'kappa_w', 'mu_s', 'mu_w', ...
@@ -309,6 +278,42 @@ par_plot_names = {'\kappa_s', '\kappa_w', '\mu_s', '\mu_w', ...
     '\epislon0', 'hbar', 'e_0', 'c_0', ...
     '\alpha' };
 
+% Indicies
+% Look, I know this system sucks, but it's part of how the rest of the
+% program works now. It would be FAR, FAR better to always call a
+% parameter's index using (var_name).index. I'm too lazy to fix that right
+% now.
+ind_kappa_s     = 1;
+ind_kappa_w     = 2;
+ind_mu_s        = 3;
+ind_mu_w        = 4;
+ind_epsi_ss     = 5;
+ind_epsi_ww     = 6;
+ind_epsi_sw     = 7;
+ind_epsi_ws     = 8;
+ind_beta        = 9;
+ind_J_p         = 10;
+ind_eta         = 11;
+ind_tau_r       = 12;
+ind_S_in        = 13;
+ind_V           = 14;
+ind_Z_QD        = 15;
+ind_n_bg        = 16;
+ind_tau_sp      = 17;
+ind_T_2         = 18;
+ind_A           = 19;
+ind_hbar_omega	= 20;
+ind_epsi_tilda	= 21;
+ind_J           = 22;
+ind_feed_phase  = 23;
+ind_feed_ampli  = 24;
+ind_tau_fb      = 25;
+ind_epsi0       = 26;
+ind_hbar        = 27;
+ind_e0          = 28;
+ind_c0          = 29;
+ind_alpha_par   = 30;
+
 par = [kappa_s, kappa_w, ...
     mu_s, mu_w, ...
     epsi_ss, epsi_ww, ... 
@@ -323,17 +328,24 @@ par = [kappa_s, kappa_w, ...
     alpha_par ];
 
 % Append rotational parameters for DDEBIF tool
-ind_omega=length(par)+1;
-par(ind_omega) = omega;
+ind_omega1=length(par)+1;
+par(ind_omega1) = omega1;
+
+ind_omega2=length(par)+1;
+par(ind_omega2) = omega2;
 if options.dimensional == 1
-    par_units(ind_omega) = {'????'}; % dimensional units
+    par_units(ind_omega1) = {'????'}; % dimensional units
+    par_units(ind_omega2) = {'????'}; % dimensional units
 elseif options.dimensional == 0
-    par_units(ind_omega) = {'1/tau_sp'}; % non-dimensional units
+    par_units(ind_omega1) = {'1/tau_sp'}; % non-dimensional units
+    par_units(ind_omega2) = {'1/tau_sp'}; % non-dimensional units
 else
     error('Your dimensionality choice does not make sense!');
 end
-par_names(ind_omega) = {'omega'};
-par_plot_names(ind_omega) = {'\omega'};
+par_names(ind_omega1) = {'omega1'};
+par_names(ind_omega2) = {'omega2'};
+par_plot_names(ind_omega1) = {'\omega1'};
+par_plot_names(ind_omega2) = {'\omega2'};
 
 % Create a param struct with all of this information.
 param.values = par;
@@ -341,6 +353,10 @@ param.var_names = par_names;
 param.units = par_units;
 param.plot_names = par_plot_names;
 param.unit_system = [param_units, ' ', calc_units];
+param.index_names = {};
+for i=1:numel(param.var_names)
+    param.index_names{i} = ['ind_',param.var_names{i}];
+end
 
 for i=1:length(param.var_names)
     param.(param.var_names{i}) = struct;
@@ -354,11 +370,28 @@ end
 
 %% Rotational functionality for DDEBIF
 % create rotation matrix
-A_rot=[0,-1,0,0; 1,0,0,0; 0,0,0,0; 0,0,0,0];
-expA_rot=@(phi) [cos(phi),-sin(phi),0,0; ...
-    sin(phi),cos(phi),0,0; ...
-    0,0,1,0; ...
-    0,0,0,1];
+A_rot=...
+    [0,-1,0,0,0,0;...
+    1,0,0,0,0,0;...
+    0,0,0,0,0,0;...
+    0,0,0,0,0,0;...
+    0,0,0,0,0,0;...
+    0,0,0,0,0,0];
+B_rot=...
+    [0,0,0,0,0,0;...
+    0,0,0,0,0,0;...
+    0,0,0,-1,0,0;...
+    0,0,1,0,0,0;...
+    0,0,0,0,0,0;...
+    0,0,0,0,0,0];
+expMAT_rot=@(phi,theta)...
+    [cos(phi),-sin(phi),0,0,0,0; ...
+    sin(phi),cos(phi),0,0,0,0; ...
+    0,0,cos(theta),-sin(theta),0,0; ...
+    0,0,sin(theta),cos(theta),0,0; ...
+    0,0,0,0,1,0;...
+    0,0,0,0,0,1];
+
 
 % Choose system based on dimensional choice
 if options.dimensional == 1
@@ -372,11 +405,19 @@ if options.dimensional == 1
 
 elseif options.dimensional == 0
     %define rhs ready func, dimensionless
-    rhs = @(x,p)qd_1ef_phaseAmp_nondim(x(1,1,:)+1i*x(2,1,:),...
-        x(1,2,:)+1i*x(2,2,:),x(3,1,:),x(3,2,:),x(4,1,:),x(4,2,:),...
+%     rhs = @(x,p)qd_1ef_phaseAmp_nondim(x(1,1,:)+1i*x(2,1,:),...
+%         x(1,2,:)+1i*x(2,2,:),x(3,1,:),x(3,2,:),x(4,1,:),x(4,2,:),...
+%         p(1),p(2),p(3),p(4),p(5),p(6),p(7),p(8),p(9),p(10),p(11),...
+%         p(12),p(13),p(14),p(15),p(16),p(17),p(18),p(19),p(20),p(21),...
+%         p(22),p(23),p(24),p(25),p(26),p(27),p(28),p(29),p(30));
+    rhs = @(x,p)qd_sameEF_ROT(...
+        x(1,1,:)+1i*x(2,1,:),x(1,2,:)+1i*x(2,2,:),... %EF1
+        x(3,1,:)+1i*x(3,1,:),x(4,2,:)+1i*x(4,2,:),... %EF2
+        x(5,1,:),x(5,2,:),x(6,1,:),x(6,2,:),...
         p(1),p(2),p(3),p(4),p(5),p(6),p(7),p(8),p(9),p(10),p(11),...
         p(12),p(13),p(14),p(15),p(16),p(17),p(18),p(19),p(20),p(21),...
         p(22),p(23),p(24),p(25),p(26),p(27),p(28),p(29),p(30));
+
 else
     error('Your dimensionality choice does not make sense!')
 end
@@ -412,8 +453,8 @@ funcs.orig_rhs = funcs.sys_rhs;
 funcs.orig_deri = funcs.sys_deri;
 
 % Add mine
-funcs.rotation = A_rot;
-funcs.exp_rotation = expA_rot;
+funcs.rotation = {A_rot, B_rot};
+funcs.exp_rotation = expMAT_rot;
 funcs.sys_rhs = @(xx,p)self_rot_rhs(xx,p, ...
     funcs.rotation,funcs.exp_rotation, ...
     funcs.orig_rhs,funcs.sys_tau,funcs.x_vectorized);
@@ -429,11 +470,22 @@ funcs.sys_cond = @(p)self_rot_cond(p,funcs.rotation);
 %     % ,'sys_cond', @sys_cond_file
 opt_inputs = {'extra_condition',1,'print_residual_info',0};
 
+% Create a system_values structure
+system_values = struct;
+system_values.rhs = rhs;
+system_values.funcs = funcs;
+system_values.opt_inputs = opt_inputs;
+system_values.A_rot = A_rot;
+system_values.B_rot = B_rot;
+system_values.expMAT_rot = expMAT_rot;
+system_values.names = {'rhs','funcs','opt_inputs', ... 
+    'A_rot','B_rot','expMAT_rot'};
+
 %% Saving Section
 
 % Determine name of folder with relevant parameters.
 % mono mode (single) electric field
-mode_report = 'monoEF_';
+mode_report = 'dualTrivEF_';
 
 % report dimensionality
 if options.dimensional == 1
@@ -460,7 +512,7 @@ end
 
 % Folder shall be named below:
 datadir_specific = strcat(options.datadir_parent, ... 
-    'ATEST_',mode_report,dimension_report,current_report, ...
+    mode_report,dimension_report,current_report, ...
     'FEED_',feed_tau_report,feed_amp_report, ...
     alpha_par_report, '/');
 
@@ -506,28 +558,15 @@ if options.save == 1
 
     % Save parameter index
     save(strcat(datadir_specific,'parameters_index.mat'),...
-        'ind_kappa_s','ind_kappa_w','ind_mu_s', ...
-        'ind_mu_w','ind_epsi_ss','ind_epsi_ww','ind_epsi_sw',...
-        'ind_epsi_ws','ind_beta','ind_J_p','ind_eta','ind_tau_r',...
-        'ind_S_in','ind_V','ind_Z_QD','ind_n_bg','ind_tau_sp',...
-        'ind_T_2','ind_A','ind_hbar_omega','ind_epsi_tilda','ind_J',...
-        'ind_feed_phase','ind_feed_ampli','ind_tau_fb','ind_epsi0',...
-        'ind_hbar','ind_e0','ind_c0','ind_alpha_par','ind_omega')
+        param.index_names{:})
     
     % Save parameters
     save(strcat(datadir_specific,'parameters.mat'),...
-        'kappa_s','kappa_w','mu_s', ...
-        'mu_w','epsi_ss','epsi_ww','epsi_sw',...
-        'epsi_ws','beta','J_p','eta','tau_r',...
-        'S_in','V','Z_QD','n_bg','tau_sp',...
-        'T_2','A','hbar_omega','epsi_tilda','J',...
-        'feed_phase','feed_ampli','tau_fb','epsi0',...
-        'hbar','e0','c0','alpha_par','omega', ...
-        'param')
+        param.var_names{:},'param')
     
     % Save rotational settings
     save(strcat(datadir_specific,'rotation_settings.mat'), ... 
-        'rhs','funcs','opt_inputs','A_rot','expA_rot')
+        system_values.names{:},'system_values')
     
     % Save options
     save(strcat(datadir_specific,'master_options.mat'),...
@@ -540,80 +579,27 @@ end
 
 if options.populate_wrkspc == 1
     
-    assignin('base','param', param);
-    
     % parameters
-    assignin('base','kappa_s', kappa_s);
-    assignin('base','kappa_w', kappa_w);
-    assignin('base','mu_s', mu_s);
-    assignin('base','mu_w', mu_w);
-    assignin('base','epsi_ss', epsi_ss);
-    assignin('base','epsi_ww', epsi_ww);
-    assignin('base','epsi_sw', epsi_sw);
-    assignin('base','epsi_ws', epsi_ws);
-    assignin('base','beta', beta);
-    assignin('base','J_p', J_p);
-    assignin('base','eta', eta);
-    assignin('base','tau_r', tau_r);
-    assignin('base','S_in', S_in);
-    assignin('base','V', V);
-    assignin('base','Z_QD', Z_QD);
-    assignin('base','n_bg', n_bg);
-    assignin('base','tau_sp', tau_sp);
-    assignin('base','T_2', T_2);
-    assignin('base','A', A);
-    assignin('base','hbar_omega', hbar_omega);
-    assignin('base','epsi_tilda', epsi_tilda);
-    assignin('base','J', J);
-    assignin('base','feed_phase', feed_phase);
-    assignin('base','feed_ampli', feed_ampli);
-    assignin('base','tau_fb', tau_fb);
-    assignin('base','epsi0', epsi0);
-    assignin('base','hbar', hbar);
-    assignin('base','e0', e0);
-    assignin('base','c0', c0);
-    assignin('base','alpha_par', alpha_par);
-    assignin('base','omega', omega);
+    assignin('base','param', param);
+    for i = 1:numel(param.values)
+        % Assign every par value to the given var_name in base
+        assignin('base',param.var_names{i},param.values(i))
+    end
     
     % indicies
-    assignin('base','ind_kappa_s', ind_kappa_s);
-    assignin('base','ind_kappa_w', ind_kappa_w);
-    assignin('base','ind_mu_s', ind_mu_s);
-    assignin('base','ind_mu_w', ind_mu_w);
-    assignin('base','ind_epsi_ss', ind_epsi_ss);
-    assignin('base','ind_epsi_ww', ind_epsi_ww);
-    assignin('base','ind_epsi_sw', ind_epsi_sw);
-    assignin('base','ind_epsi_ws', ind_epsi_ws);
-    assignin('base','ind_beta', ind_beta);
-    assignin('base','ind_J_p', ind_J_p);
-    assignin('base','ind_eta', ind_eta);
-    assignin('base','ind_tau_r', ind_tau_r);
-    assignin('base','ind_S_in', ind_S_in);
-    assignin('base','ind_V', ind_V);
-    assignin('base','ind_Z_QD', ind_Z_QD);
-    assignin('base','ind_n_bg', ind_n_bg);
-    assignin('base','ind_tau_sp', ind_tau_sp);
-    assignin('base','ind_T_2', ind_T_2);
-    assignin('base','ind_A', ind_A);
-    assignin('base','ind_hbar_omega', ind_hbar_omega);
-    assignin('base','ind_epsi_tilda', ind_epsi_tilda);
-    assignin('base','ind_J', ind_J);
-    assignin('base','ind_feed_phase', ind_feed_phase);
-    assignin('base','ind_feed_ampli', ind_feed_ampli);
-    assignin('base','ind_tau_fb', ind_tau_fb);
-    assignin('base','ind_epsi0', ind_epsi0);
-    assignin('base','ind_hbar', ind_hbar);
-    assignin('base','ind_e0', ind_e0);
-    assignin('base','ind_c0', ind_c0);
-    assignin('base','ind_alpha_par', ind_alpha_par);
-    assignin('base','ind_omega', ind_omega);
+    for i = 1:numel(param.index_names)
+        % Assign every par index to the given index_name in base
+        assignin('base',param.index_names{i}, ...
+            param.(param.var_names{i}).index)
+    end
     
     % rotational settings
-    assignin('base','rhs', rhs);
-    assignin('base','funcs', funcs);
-    assignin('base','opt_inputs', opt_inputs);
-    assignin('base','A_rot', A_rot);
-    assignin('base','expA_rot', expA_rot);
+    assignin('base','system_values', system_values);
+    for i = 1:numel(system_values.names)
+        % Assign every system value to the given system_value_name in base
+        assignin('base',system_values.names{i}, ...
+            system_values.(system_values.names{i}) )
+    end
     
     % Options
     assignin('base', 'master_options', master_options)
