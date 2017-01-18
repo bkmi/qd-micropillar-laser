@@ -184,7 +184,9 @@ end
 datadir_specific = options.datadir_specific;
 
 % Where will it save?
+if options.save == 1
     fprintf(strcat('\n\n Saving in subfolder:\n', datadir_specific,'\n'))
+end
     
 if options.save == 1 && ...
         ~exist(strcat(datadir_specific,options.save_name,'.mat'),'file')
