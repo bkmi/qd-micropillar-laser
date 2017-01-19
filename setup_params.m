@@ -412,7 +412,7 @@ elseif options.dimensional == 0
 %         p(22),p(23),p(24),p(25),p(26),p(27),p(28),p(29),p(30));
     rhs = @(x,p)qd_sameEF_ROT(...
         x(1,1,:)+1i*x(2,1,:),x(1,2,:)+1i*x(2,2,:),... %EF1
-        x(3,1,:)+1i*x(3,1,:),x(4,2,:)+1i*x(4,2,:),... %EF2
+        x(3,1,:)+1i*x(4,1,:),x(3,2,:)+1i*x(4,2,:),... %EF2
         x(5,1,:),x(5,2,:),x(6,1,:),x(6,2,:),...
         p(1),p(2),p(3),p(4),p(5),p(6),p(7),p(8),p(9),p(10),p(11),...
         p(12),p(13),p(14),p(15),p(16),p(17),p(18),p(19),p(20),p(21),...
@@ -422,7 +422,6 @@ else
     error('Your dimensionality choice does not make sense!')
 end
 
-%% EDITING HERE, MADE IT MY OWN ROT
 
 % Prepare 'funcs' for DDEBIF
 

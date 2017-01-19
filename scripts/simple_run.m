@@ -4,7 +4,7 @@
 setup_params('save',1,'feed_ampli',0.373, 'alpha_par',1)
 
 % Create and save turn on time series
-dde23_soln = solver([1e-9;0;0;0], [0,20], param, master_options);
+dde23_soln = solver([1e-9;0;1e-9;0;0;0], [0,20], param, master_options);
 
 % Create initial branch
 [branch_stst, nunst_branch_stst, ind_fold, ind_hopf] = ... 
