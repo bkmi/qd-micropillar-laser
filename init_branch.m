@@ -113,7 +113,7 @@ end
 
 
 % Create step_bound_opt, prepare rotational options
-if exist(opt_inputs) == 1
+if exist('opt_inputs','var') == 1
     % Do nothing, already defined
 else
     % Make it!
