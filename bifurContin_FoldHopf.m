@@ -187,10 +187,12 @@ end
 
 % Create rotational options, ind_contin_param
 opt_inputs = {'extra_condition',1,'print_residual_info',0};
-ind_contin_param_w_omega = [ind_contin_param, param_struct.omega.index];
+ind_contin_param_w_omega = [ind_contin_param, ...
+    param_struct.omega1.index, ...
+    param_struct.omega2.index];
 
 % Get nunst_init_branch, determine which kind of bifurcation this is.
-nunst_init_branch = GetRotStability(init_branch,funcs);
+nunst_init_branch = GetRotStability(init_branch,funcs, 2);
 ind_fold = find(abs(diff(nunst_init_branch))==1);
 ind_hopf = find(abs(diff(nunst_init_branch))==2);
 if any(ind_bifurcation == ind_fold)
@@ -218,14 +220,14 @@ if options.plot_prog == 1
 end
 
 
-%% Fold Continuation
+%% Fold Continuation // CALLS m_SetupRWFold in rot folder
 if strcmp('fold',bifurcation_type)
-    [foldfuncs,out_branch,~]=SetupRWFold( ...
+    [foldfuncs,out_branch,~]=m_SetupRWFold( ...
         funcs, init_branch, ind_bifurcation,...
         'contpar',ind_contin_param_w_omega, ...
         'dir',ind_contin_param_w_omega(1), ...
         opt_inputs{:},...
-        step_bound_opt{:});
+        step_bound_opt{:}); 
     
     out_branch = br_contn(foldfuncs,out_branch,branch_length);
     out_branch = br_rvers(out_branch);

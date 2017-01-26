@@ -1,7 +1,9 @@
 %% Create initial branch and extend bifurcations from there. Basic setup.
 
+clear;
+
 % Setup parameters, save them
-setup_params('save',1,'feed_ampli',0.373, 'alpha_par',1)
+setup_params('save',1,'feed_ampli',0.373, 'alpha_par',1,'clear',0)
 
 % Create and save turn on time series
 dde23_soln = solver([1e-9;0;1e-9;0;0;0], [0,20], param, master_options);
@@ -9,10 +11,14 @@ dde23_soln = solver([1e-9;0;1e-9;0;0;0], [0,20], param, master_options);
 % Create initial branch
 [branch_stst, nunst_branch_stst, ind_fold, ind_hopf] = ... 
     init_branch(funcs, ...
-    dde23_soln.y(:,end), ind_feed_phase, 200, param, ...
+    dde23_soln.y(:,end), ind_feed_phase, 500, param, ...
     'max_step',[ind_feed_phase, (1.0)*pi/32], master_options);
 
-%% Create structs for fold_branches and hopf_branches
+% [nunst,dom,triv_defect,points] = GetStability(branch_stst, ...
+%     'exclude_trivial',true,'locate_trivial',@(p)0,'funcs',funcs,'recompute',true);
+% [TEST_nunst,~,~,pts] = GetStability(branch_stst,'funcs',funcs,'recompute',true);
+
+%% Create structs for fold_branches
 % Fold
 fold_branches = struct;
 for i = 1:length(ind_fold)
@@ -43,11 +49,14 @@ for i = 1:length(ind_fold)
                     i;
                 fold_branches.(fold_active_branch_name).fold_active_branch_name = ...
                     fold_active_branch_name;
+            otherwise
+                rethrow(ME)
         end
     end
 end
 
 
+%% Create structs for hopf_branches
 % Hopf
 hopf_branches = struct;
 for i = 1:length(ind_hopf)
@@ -78,6 +87,8 @@ for i = 1:length(ind_hopf)
                     i;
                 hopf_branches.(hopf_active_branch_name).hopf_active_branch_name = ...
                     hopf_active_branch_name;
+            otherwise
+                rethrow(ME)
         end
     end
 end

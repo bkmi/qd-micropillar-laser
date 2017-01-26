@@ -1,4 +1,4 @@
-function [ res, J ] = self_rot_cond( point, A_rot )
+function [ res, J ] = m_rot_cond( point, A_rot )
 %Personal version of rot_cond, hardcoded for my system
 %   Input:
 %       point
@@ -21,22 +21,13 @@ if isa(A_rot,'double')
         error('?!?!')
     end
 elseif isa(A_rot,'cell')
-% THIS ISN'T CORRECT. YOU HAVE TO GET THE ROTATION FROM EACH MATRIX + THE J
-% FROM EACH MATRIX
-%     % Given more rotation matricies!
-%     TOTAL_rot = zeros(size(A_rot{1}));
-%     for i = 1:numel(A_rot) %number of elements of okay
-%         TOTAL_rot = TOTAL_rot + A_rot{i};
-%     end
-    
-    
     % Later on, somewhere in p_correc/correct_ini DDE BIF-TOOL NEEDS
-    % another jacobian column(or row??) to continue each new parameter.
+    % another jacobian row to continue each new parameter.
     % I.e. one for
     % omega1, one for omega2, etc...
     % 
     % When the rot_cond func calls the orig_sys_cond func then it generates
-    % another jacobian column(row?) for each one. For reference I put the
+    % another jacobian row? for each one. For reference I put the
     % code below:
     % [userres,userJ]=usercond(userpoint);
     % J=[userJ(:);Jphas]; (Jphas == This J from rot_cond)

@@ -1,4 +1,4 @@
-function [ y ] = self_rot_rhs(xx,p,A,expA,user_rhs,user_tau,isvec)
+function [ y ] = m_rot_rhs(xx,p,A,expA,user_rhs,user_tau,isvec)
 %My own version of the right hand side eqn.
 %   Input:
 %       xx, ...

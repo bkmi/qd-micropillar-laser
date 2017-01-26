@@ -224,28 +224,41 @@ ind_contin_param_w_omega = [ind_contin_param, ...
 
 % Plot settings
 if options.plot_prog == 1
-    figure
+    figure;
+    AX_branch_stst = gca;
 end
 branch_stst.method.continuation.plot = options.plot_prog;
 
 
 % Continue + Plot
-[branch_stst,~,~,~] = br_contn(funcs,branch_stst,branch_length);
+[branch_stst,~,~,~] = br_contn(funcs,branch_stst,branch_length, ...
+    'plotaxis',AX_branch_stst);
 
 if options.reverse == 1
     branch_stst = br_rvers(branch_stst);
-    branch_stst = br_contn(funcs,branch_stst,branch_length);
+    branch_stst = br_contn(funcs,branch_stst,branch_length, ...
+        'plotaxis',AX_branch_stst);
 end
 
-title(strcat('Omega-vs-', param_struct.plot_names(ind_contin_param)))
-xlabel(strcat(param_struct.plot_names(ind_contin_param), ...
-    {' '}, ...
-    param_struct.units(ind_contin_param)))
-ylabel(['Omega ', param_struct.units(param_struct.omega.index)])
+% You can tell which params are being plotted by using the following
+% commands:
+% [x, y] = df_measr(0,branch_stst)
+% The col for x is the parameter on the x axis, same for y. I cannot get a
+% third parameter, so it will have to be plotted seperately.
+
+[x, y] = df_measr(0,branch_stst); % Get plotted parameters
+% Plot those parameters.
+title([param_struct.plot_names(y.col), ...
+    'vs', ...
+    param_struct.plot_names(x.col)])
+xlabel([param_struct.plot_names(x.col), ...
+    param_struct.units(x.col)])
+ylabel(['Omega1 ', ...
+    param_struct.units(x.col)])
 
 % Get stability
 branch_stst.method.stability.minimal_real_part = options.minimal_real_part;
-[nunst_branch_stst,~,~,branch_stst.point] = GetRotStability(branch_stst, funcs);
+[nunst_branch_stst,~,~,branch_stst.point] = GetRotStability(branch_stst, funcs, 2);
 
 
 %% Get fold, hopf bifurcations
@@ -264,12 +277,13 @@ end
 if options.save == 1 && ...
         ~exist(strcat(datadir_specific,options.save_name,'.mat'),'file')
     save(strcat(datadir_specific,options.save_name),...
-        'branch_stst', 'nunst_branch_stst', 'ind_fold', 'ind_fold')
+        'branch_stst', 'nunst_branch_stst', 'ind_fold', 'ind_hopf')
 elseif options.save == 1 && ...
         exist(strcat(datadir_specific,options.save_name,'.mat'),'file')
-    warning('That file already exists. Overwriting.')
+    warning('That file %s already exists. Overwriting.', ...
+        strcat(datadir_specific,options.save_name) )
     save(strcat(datadir_specific,options.save_name),...
-        'branch_stst', 'nunst_branch_stst', 'ind_fold', 'ind_fold')
+        'branch_stst', 'nunst_branch_stst', 'ind_fold', 'ind_hopf')
 end
 
 
