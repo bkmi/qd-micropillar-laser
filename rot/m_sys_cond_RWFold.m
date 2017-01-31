@@ -37,4 +37,5 @@ Jnorm.parameter(ind_rho)=2*p.parameter(ind_rho); %
 r=[r_orig(:);rphas1;rphas2;rnorm];
 J=[J_orig(:);Jphas1;Jphas2;Jnorm];
 
+
 end

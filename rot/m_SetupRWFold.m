@@ -93,7 +93,7 @@ end
 
 [U,S,V]=svd(J); %#ok<ASGLU>
 nullvecs=V(:,end);
-v=nullvecs(1:length(point.x)); % Is this part just throwing away EXACTLY what I need?!
+v=nullvecs(1:length(point.x)); % final vector, a part (hopefully spanning) the nullspace of J
 rho=nullvecs(end);
 vpoint=p_axpy(0,point,[]);
 vpoint.x=v;

@@ -13,8 +13,10 @@ x0=x(1:dim,:); % the actual guess/soln vector
 v=x(dim+1:end,:); % the nullvector
 y0=orig_rhs(x0,p);
 dfx=@(x0,dev,ind)app_dir_deriv(@(x)orig_rhs(x,p),x0,dev,ind,hbif);
+    % 2nd order approx directional derivative in ith column of x0
+
 %% add partial derivatives of all terms
-y1=0*y0;
+y1=0*y0; % Make a vector that is the right size but all zeros.
 for i=1:size(x0,2)
     y1=y1+dfx(x0,v(:,i),i);
 end
