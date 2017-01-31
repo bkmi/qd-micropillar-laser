@@ -47,10 +47,12 @@ end
 dim=size(point.x,1);            % dimension of original problem
 npar=length(point.parameter);   % number of original system parameters
 ind_rho=npar+1;                 % location of extra parameter rho
+
 %% set up functions of extended system
 pfuncs=funcs;
-pfuncs.get_comp=@(p,component)extract_from_RWfold(p,component,npar); % Unused?!
-pfuncs.sys_rhs=@(x,p)sys_rhs_RWFold(x,p(1:npar),p(ind_rho),funcs.sys_rhs,dim,options.hbif);
+pfuncs.get_comp=@(p,component)extract_from_RWfold(p,component,npar);
+% pfuncs.sys_rhs=@(x,p)sys_rhs_RWFold(x,p(1:npar),p(ind_rho),funcs.sys_rhs,dim,options.hbif);
+pfuncs.sys_rhs=@(x,p)m_sys_rhs_RWFold(x,p(1:npar),p(ind_rho),funcs.sys_rhs,dim,options.hbif);
 
 
 %% CHANGING THINGS
@@ -63,13 +65,6 @@ pbranch.parameter.free=[pbranch.parameter.free,ind_rho];
 pbranch.method.point.extra_condition=1;
 %% create initial guess for correction
 pfoldini0=RWfoldInit(funcs,point,branch.parameter.free);
-
-% %% CHECKING IN BASE
-% assignin('base','pfuncs',pfuncs)
-% assignin('base','pbranch',pbranch)
-% assignin('base','pfoldini0',pfoldini0)
-% assignin('base','options',options)
-
 %% correct initial guess and find 2nd point along branch if desired
 [pbranch,suc]=correct_ini(pfuncs,pbranch,pfoldini0,...
     options.dir,options.step,options.correc);
