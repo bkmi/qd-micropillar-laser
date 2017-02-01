@@ -46,7 +46,20 @@ if isfield(point,'stability')
 end
 dim=size(point.x,1);            % dimension of original problem
 npar=length(point.parameter);   % number of original system parameters
-ind_rho=npar+1;                 % location of extra parameter rho
+
+% Determine the number of rhos, like below, using the number of elements in
+% the residual from the extra conditions. (REPEATED BELOW)
+% I can't think of a good way to tell whether or not an extra condition is
+% a rot_sym condition, so this will assume ALL of your extra conditions are
+% rot_syms... Effectively ruining support for other kinds of extra
+% conditions, but correctly selecting the number of omegas AS LONG AS you
+% have no non-rot_sym extra conditions.
+[rdum,~]=funcs.sys_cond(point);
+numRho = numel(rdum);
+ind_rho = zeros(1,numRho);
+for i = 1:numRho
+    ind_rho(i) = npar + i; % location of extra parameters: rho.
+end
 
 %% set up functions of extended system
 pfuncs=funcs;
@@ -76,28 +89,58 @@ pfoldini=point;
 J=stst_jac(funcs,point.x,point.parameter,free_par_ind);
 [rdum,Jcond]=funcs.sys_cond(point); %#ok<ASGLU>
 
-%% OKAY, I'M CHANGING THINGS HERE
+% Create a new jacobian, system in first rows, appended with each extra
+% condition row. (One new row for each new omega.)
 for i=1:numel(Jcond)
-    % for each condition you need to add a new J ROW
-    % MY ATTEMPT:
-    % J(end+1,:) = [Jcond(i).x', Jcond(i).parameter(free_par_ind)];
     J = [J;Jcond(i).x',Jcond(i).parameter(free_par_ind)];
 end
 
-% J=[J;Jcond.x',Jcond.parameter(free_par_ind)];
-
+% Generate vector which spans jacobian nullspace
 [U,S,V]=svd(J); %#ok<ASGLU>
 nullvecs=V(:,end);
-v=nullvecs(1:length(point.x)); % final vector, a part (hopefully spanning) the nullspace of J
-rho=nullvecs(end);
+v=nullvecs(1:length(point.x)); % this vector spans the nullspace of J
+
+% Create a number of rhos and their related vpoint:
+% The point is to generate a number of rhos equal to the number of omegas
+% you have...
+% The program generates a number of rhos = number extra conditions you
+% have. 
+% I can't think of a good way to tell whether or not an extra condition is
+% a rot_sym condition, so this will assume ALL of your extra conditions are
+% rot_syms... Effectively ruining support for other kinds of extra
+% conditions, but correctly selecting the number of omegas AS LONG AS you
+% have no non-rot_sym extra conditions.
+numExtraCond = numel(rdum);
+rho = zeros(1,numExtraCond);
+for i = 1:numExtraCond
+    rho(i) = nullvecs(end-i+1); %+1 because nullvecs(end) = rho(1)
+end
 vpoint=p_axpy(0,point,[]);
-vpoint.x=v;
-vpoint.parameter=rho;
-normv=sqrt(v'*v+rho^2);
+vpoint=repmat(vpoint,numExtraCond,1); % Create enough copies
+for i = 1:numExtraCond
+    vpoint(i).x=v;
+    vpoint(i).parameter=rho(i);
+end
+normv=sqrt(v'*v+sum(rho.^2));
 rho=rho/normv;
-vpoint.x=vpoint.x/normv;
-pfoldini.x=[pfoldini.x;vpoint.x];
+for i = 1:numExtraCond
+    vpoint(i).x=vpoint(i).x/normv;
+end
+vpoint(1).x=vpoint(1).x/normv; %They are all the same, so I take the 1st.
+pfoldini.x=[pfoldini.x;vpoint(1).x];
 pfoldini.parameter=[pfoldini.parameter,rho];
+
+% OLD WAY
+% rho=nullvecs(end);
+% vpoint=p_axpy(0,point,[]);
+% vpoint.x=v;
+% vpoint.parameter=rho;
+% normv=sqrt(v'*v+rho^2);
+% rho=rho/normv;
+% vpoint.x=vpoint.x/normv;
+% pfoldini.x=[pfoldini.x;vpoint.x];
+% pfoldini.parameter=[pfoldini.parameter,rho];
+
 end
 %% extract components from pfold
 function result_array=extract_from_RWfold(pfold_array,component,npar)

@@ -7,12 +7,20 @@ function [r,J]=m_sys_cond_RWFold(p,orig_cond,dim,ind_rho)
 %% Orig
 p_orig=p; % point strut
 p_orig.x=p.x(1:dim); % select actual guess/soln
-p_orig.parameter=p_orig.parameter(1:ind_rho-1); % lose rho
+p_orig.parameter=p_orig.parameter(1:min(ind_rho)-1); % lose rho
 [r_orig,J_orig]=orig_cond(p_orig);
 nuser=length(r_orig);
+
+ind_rho_length = numel(ind_rho);
+% This number is used throughout the function. It's approximately equal to
+% the number of omegas used in rot_sym conditions. However, it counts all
+% extra conditions like rot_conditions. THIS IS A PROBLEM IF YOU WANT TO
+% USE EXTRA CONDITIONS THAT ARE NOT ROT CONDITIONS!
+
 for i=1:nuser
     J_orig(i).x=[J_orig(i).x;zeros(dim,1)]; % keep orig J, tack on 0s after so you have [x;v]
-    J_orig(i).parameter=[J_orig(i).parameter,0]; % put a zero after for rho
+    J_orig(i).parameter=[J_orig(i).parameter,...
+        zeros(1,ind_rho_length)]; % put a zero after for rho
 end
 
 %% Phas, ORIG from rot_sym
@@ -31,9 +39,9 @@ end
 
 %% phas: This is with numel(ind_rho) aka arbitrary amount of omegas
 % In this case, numel(ind_rho) ~= 1. This property is exploited below.
-rphasContainer = cell(numel(ind_rho));
-Jphascontainer = cell(numel(ind_rho));
-for i = 1:numel(ind_rho)
+rphasContainer = cell(ind_rho_length);
+Jphascontainer = cell(ind_rho_length);
+for i = 1:ind_rho_length
     % Create temporary values related to that particular rho.
     rphas = 0;
     Jphas = J_orig(end);
@@ -67,13 +75,12 @@ J = J_orig(:);
 
 % Preallocate, note: numel(r_orig) == numel(J_orig)
 r_orig_length = numel(r_orig);
-ind_rho_length = numel(ind_rho);
 r = [r;zeros(ind_rho_length,1)];
-J = [J;repmat(struct('kind','stst','parameter',0,'x',0),numel(ind_rho),1)];
+J = [J;repmat(struct('kind','stst','parameter',0,'x',0),ind_rho_length,1)];
     % repmat is an efficient way to generate structures
 
 % Assign values for return.
-for i = 1:numel(ind_rho);
+for i = 1:ind_rho_length;
     r(r_orig_length + i) = rphasContainer{i};
     J(r_orig_length + i) = Jphascontainer{i};
 end
