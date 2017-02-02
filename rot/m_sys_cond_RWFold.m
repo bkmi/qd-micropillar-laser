@@ -44,7 +44,10 @@ Jphascontainer = cell(ind_rho_length);
 for i = 1:ind_rho_length
     % Create temporary values related to that particular rho.
     rphas = 0;
-    Jphas = J_orig(end);
+    Jphas = J_orig(end-ind_rho_length+i);
+    % This works because if there are two rhos:
+    % Jphas(1) = J_orig(end-2+1) aka second to last
+    % Jphas(2) = J_orig(end-2+2) aka last
     Jphas.x = [zeros(dim,1);Jphas.x(1:dim)];
     
     % Store temporary values in their containers.
@@ -55,6 +58,7 @@ end
 %% Norm
 rnorm=sum(p.x(dim+1:end).^2)+sum(p.parameter(ind_rho).^2)-1; % exploited here
 %square each value of v in p, then add each rho^2, then -1.
+% rnorm=sum(p.x(dim+1:end).^2)+p.parameter(ind_rho)^2-1;
 
 Jnorm=p_axpy(0,p,[]); % x = 0, par from p
 Jnorm.x(dim+1:end)=2*p.x(dim+1:end); %Give Jnorm, 2*v from p

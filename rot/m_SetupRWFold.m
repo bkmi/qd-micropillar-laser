@@ -34,7 +34,7 @@ function [pfuncs,pbranch,suc]=m_SetupRWFold(funcs,branch,ind,varargin)
 
 %% process options
 default={'contpar',[],'hbif',1e-3,'correc',true,'dir',[],...
-    'step',1e-3,'hjac',1e-6,'df_deriv',true};
+    'step',1e-3,'hjac',1e-8,'df_deriv',true};
 [options,pass_on]=dde_set_options(default,varargin,'pass_on');
 branch.point=branch.point(ind); % remove all points but approx fold
 % initialize branch of folds (pbranch)
@@ -66,12 +66,8 @@ pfuncs=funcs;
 pfuncs.get_comp=@(p,component)extract_from_RWfold(p,component,npar);
 % pfuncs.sys_rhs=@(x,p)sys_rhs_RWFold(x,p(1:npar),p(ind_rho),funcs.sys_rhs,dim,options.hbif);
 pfuncs.sys_rhs=@(x,p)m_sys_rhs_RWFold(x,p(1:npar),p(ind_rho),funcs.sys_rhs,dim,options.hbif);
-
-
-%% CHANGING THINGS
 pfuncs.sys_cond=@(p)m_sys_cond_RWFold(p,funcs.sys_cond,dim,ind_rho);
 %pfuncs.sys_cond=@(p)sys_cond_RWFold(p,funcs.sys_cond,dim,ind_rho);
-
 pfuncs.sys_deri=@(x,p,nx,np,v)df_deriv(pfuncs,x,p,nx,np,v);
 %% required amendments of structures for extended system
 pbranch.parameter.free=[pbranch.parameter.free,ind_rho];
@@ -97,8 +93,8 @@ end
 
 % Generate vector which spans jacobian nullspace
 [U,S,V]=svd(J); %#ok<ASGLU>
-nullvecs=V(:,end);
-v=nullvecs(1:length(point.x)); % this vector spans the nullspace of J
+nullvecs=V(:,end); % this vector spans the nullspace of J
+v=nullvecs(1:length(point.x));
 
 % Create a number of rhos and their related vpoint:
 % The point is to generate a number of rhos equal to the number of omegas
@@ -113,22 +109,35 @@ v=nullvecs(1:length(point.x)); % this vector spans the nullspace of J
 numExtraCond = numel(rdum);
 rho = zeros(1,numExtraCond);
 for i = 1:numExtraCond
-    rho(i) = nullvecs(end-i+1); %+1 because nullvecs(end) = rho(1)
+    rho(i) = nullvecs(end-numExtraCond+i); 
+    % This works because if there are two rhos:
+    % rho(1) = nullvecs(end-2+1) aka second to last
+    % rho(2) = nullvecs(end-2+2) aka last
 end
+
 vpoint=p_axpy(0,point,[]);
-vpoint=repmat(vpoint,numExtraCond,1); % Create enough copies
-for i = 1:numExtraCond
-    vpoint(i).x=v;
-    vpoint(i).parameter=rho(i);
-end
+vpoint.x=v;
 normv=sqrt(v'*v+sum(rho.^2));
 rho=rho/normv;
-for i = 1:numExtraCond
-    vpoint(i).x=vpoint(i).x/normv;
-end
-vpoint(1).x=vpoint(1).x/normv; %They are all the same, so I take the 1st.
-pfoldini.x=[pfoldini.x;vpoint(1).x];
+vpoint.x=vpoint.x/normv;
+pfoldini.x=[pfoldini.x;vpoint.x];
 pfoldini.parameter=[pfoldini.parameter,rho];
+
+% Another attempt...
+% vpoint=p_axpy(0,point,[]);
+% vpoint=repmat(vpoint,numExtraCond,1); % Create enough copies
+% for i = 1:numExtraCond
+%     vpoint(i).x=v;
+%     vpoint(i).parameter=rho(i);
+% end
+% normv=sqrt(v'*v+sum(rho.^2));
+% rho=rho/normv;
+% for i = 1:numExtraCond
+%     vpoint(i).x=vpoint(i).x/normv;
+% end
+% vpoint(1).x=vpoint(1).x/normv; %They are all the same, so I take the 1st.
+% pfoldini.x=[pfoldini.x;vpoint(1).x];
+
 
 % OLD WAY
 % rho=nullvecs(end);
