@@ -47,15 +47,17 @@ end
 dim=size(point.x,1);            % dimension of original problem
 npar=length(point.parameter);   % number of original system parameters
 
-% Determine the number of rhos, like below, using the number of elements in
-% the residual from the extra conditions. (REPEATED BELOW)
-% I can't think of a good way to tell whether or not an extra condition is
-% a rot_sym condition, so this will assume ALL of your extra conditions are
-% rot_syms... Effectively ruining support for other kinds of extra
-% conditions, but correctly selecting the number of omegas AS LONG AS you
-% have no non-rot_sym extra conditions.
-[rdum,~]=funcs.sys_cond(point);
-numRho = numel(rdum);
+% Create a number of rhos:
+if isa(funcs.rotation,'cell') == 1;
+    % This system assumes that your rotations come LAST in the resolvent
+    % and jacobian.
+    numRho = numel(funcs.rotation);
+elseif isa(funcs.rotation,'double') == 1;
+    numRho = 1;
+else
+    error('funcs.rotation should be a matrix or a cell filled with matricies')
+end
+
 ind_rho = zeros(1,numRho);
 for i = 1:numRho
     ind_rho(i) = npar + i; % location of extra parameters: rho.
@@ -97,19 +99,19 @@ nullvecs=V(:,end); % this vector spans the nullspace of J
 v=nullvecs(1:length(point.x));
 
 % Create a number of rhos and their related vpoint:
-% The point is to generate a number of rhos equal to the number of omegas
-% you have...
-% The program generates a number of rhos = number extra conditions you
-% have. 
-% I can't think of a good way to tell whether or not an extra condition is
-% a rot_sym condition, so this will assume ALL of your extra conditions are
-% rot_syms... Effectively ruining support for other kinds of extra
-% conditions, but correctly selecting the number of omegas AS LONG AS you
-% have no non-rot_sym extra conditions.
-numExtraCond = numel(rdum);
-rho = zeros(1,numExtraCond);
-for i = 1:numExtraCond
-    rho(i) = nullvecs(end-numExtraCond+i); 
+if isa(funcs.rotation,'cell') == 1;
+    % This system assumes that your rotations come LAST in the resolvent
+    % and jacobian.
+    numRho = numel(funcs.rotation);
+elseif isa(funcs.rotation,'double') == 1;
+    numRho = 1;
+else
+    error('funcs.rotation should be a matrix or a cell filled with matricies')
+end
+
+rho = zeros(1,numRho);
+for i = 1:numRho
+    rho(i) = nullvecs(end-numRho+i); 
     % This works because if there are two rhos:
     % rho(1) = nullvecs(end-2+1) aka second to last
     % rho(2) = nullvecs(end-2+2) aka last
@@ -122,22 +124,6 @@ rho=rho/normv;
 vpoint.x=vpoint.x/normv;
 pfoldini.x=[pfoldini.x;vpoint.x];
 pfoldini.parameter=[pfoldini.parameter,rho];
-
-% Another attempt...
-% vpoint=p_axpy(0,point,[]);
-% vpoint=repmat(vpoint,numExtraCond,1); % Create enough copies
-% for i = 1:numExtraCond
-%     vpoint(i).x=v;
-%     vpoint(i).parameter=rho(i);
-% end
-% normv=sqrt(v'*v+sum(rho.^2));
-% rho=rho/normv;
-% for i = 1:numExtraCond
-%     vpoint(i).x=vpoint(i).x/normv;
-% end
-% vpoint(1).x=vpoint(1).x/normv; %They are all the same, so I take the 1st.
-% pfoldini.x=[pfoldini.x;vpoint(1).x];
-
 
 % OLD WAY
 % rho=nullvecs(end);

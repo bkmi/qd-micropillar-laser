@@ -55,17 +55,14 @@ if isa(A,'double')
     y=y0-reshape(A*omega*reshape(xxrot(:,1,:),[dim,nvec]),[dim,1,nvec]);
 elseif isa(A,'cell')
     % GIVEN TWO ROTATIONS AND EXPA WITH TWO VAR
-    
-    TOTAL_rot = zeros(size(A{1}));
-    for i = 1:numel(A) %number of elements of okay
-        TOTAL_rot = TOTAL_rot + A{i};
-    end
-    
-    omega1=p(end);
-    omega2=p(end-1);
+
+    % userpar, omega1, omega2, omega3, ...
+    omega1=p(end-1);
+    omega2=p(end);
     userpar=p(1:end-2);
     xxrot=xx;
     tau_ind=user_tau();
+    
     if ~isvec
         for i=2:size(xx,2)
             xxrot(:,i)=expA(-omega1*p(tau_ind(i-1)),-omega2*p(tau_ind(i-1)))*xxrot(:,i);
@@ -74,16 +71,17 @@ elseif isa(A,'cell')
         dim=size(xxrot,1); % Number of rows
         nvec=size(xxrot,3); % Number of 'sheets' -- vectorized
         for i=2:size(xx,2) % 2:(number of columns)
-    %         xxrot(:,i,:) % all rows, second column, all pages 
-    %         expA(-omega*p(tau_ind(i-1))) %expA @ tau_fb1
-    %         reshape(xxrot(:,i,:),dim,nvec) % Turn multiple sheets into a 2d matrix
+%             xxrot(:,i,:) % all rows, ith column, all pages
+%             expA(-omega*p(tau_ind(i-1))) %expA @ tau_fb1 (One omega)
+%             reshape(xxrot(:,i,:),dim,nvec) % Turn multiple sheets into a
+%             2d matrix
             xxrot(:,i,:)=expA(-omega1*p(tau_ind(i-1)),-omega2*p(tau_ind(i-1)))*reshape(xxrot(:,i,:),dim,nvec);
-            % multiply the matricies and move the resulting columns into the
-            % relevant page.
+            % multiply the matricies and move the resulting columns into
+            % the relevant page.
             % 
-            % The whole process extracted the second column from each page, did
-            % the multiplication, then put each multiplied second column back
-            % where it came from.
+            % The whole process extracted the second column from each page,
+            % did the multiplication, then put each multiplied second
+            % column back where it came from.
         end
     end
     y0=user_rhs(xxrot,userpar); % calculate: given new, rotated 2nd column
