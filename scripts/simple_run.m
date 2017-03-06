@@ -3,7 +3,7 @@
 clear;
 
 % Setup parameters, save them?
-setup_params('save',1,'feed_ampli',0.373, 'alpha_par',0.75,'clear',0)
+setup_params('save',1,'feed_ampli',0.373, 'alpha_par',0.75,'J',560e-6,'clear',0)
 % setup_params('save',1,'feed_ampli',0.15, 'alpha_par',1,'clear',0)
 
 % Create and save turn on time series

@@ -10,7 +10,7 @@ addpath(strcat(present_working_directory,'/functions/numerical_systems/'))
 addpath(strcat(present_working_directory,'/scripts/'))
 
 %% DDE-BIFTOOL
-addpath(strcat(present_working_directory,'ddebiftool_multirot/')) % Multi_rot
+addpath(strcat(present_working_directory,'/ddebiftool_multirot/')) % Multi_rot
 addpath('~/dde_biftool_v3.1.1/ddebiftool/'); 
 addpath('~/dde_biftool_v3.1.1/ddebiftool_extra_psol/');
 addpath('~/dde_biftool_v3.1.1/ddebiftool_utilities/');
