@@ -1,5 +1,20 @@
 %% Plot @ 560 microamps, branches
 
+% plot settings
+tdeco={'fontsize',13.2,'fontweight','bold'};
+
+% colors
+colorNum = 9;
+bluecol = brewermap(colorNum,'Blues');
+redcol = brewermap(colorNum,'Reds');
+greycol = brewermap(colorNum,'Greys');
+greencol = brewermap(colorNum,'Greens');
+
+% linewidth
+linewidth = 2;
+
+%% plot
+
 branchplot = figure;
 
 % % Plot each hopf_branch
