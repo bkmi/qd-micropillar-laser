@@ -18,7 +18,7 @@ linewidth = 2;
 branchplot = figure;
 
 % % Plot each hopf_branch
-% namesHopfBranches = fieldnames(hopf_branches);
+namesHopfBranches = fieldnames(hopf_branches);
 % for i = [12,13,15,16,17] % 1:numel(namesHopfBranches)
 %     % Add each hopf_branch
 %     if ~any(strcmp('error', ... 
@@ -58,13 +58,14 @@ hopfs(4) = fourHopf;
 hopfs(5) = fiveHopf;
 
 for i = 1:numel(hopfs)
-    plot_branch(hopfs(i), param, ...
-        'add_2_gcf', 1, 'color','c');
+    [~,~,lineHandHopf] = plot_branch(hopfs(i), param, ...
+        'add_2_gcf', 1, 'color','b', ...
+        'PlotStyle', { 'LineStyle', '-', 'Marker', '.' }); % ,tdeco{:}
 end
 
 %% Plot each fold_branch
 
-% namesFoldBranches = fieldnames(fold_branches);
+namesFoldBranches = fieldnames(fold_branches);
 % 
 % for i = [7,8] % 1:numel(namesFoldBranches)
 %     % Add each hopf_branch
@@ -86,28 +87,68 @@ twoFold = fold_branches.(namesFoldBranches{8});
 twoFold.point(234:end) = [];
 twoFold.point(1:66) = [];
 
-plot_branch(oneFold, param, ...
-            'add_2_gcf', 1, 'color','r');
-plot_branch(twoFold, param, ...
-            'add_2_gcf', 1, 'color','r');
-        
+[~,~,lineHandFold1] = plot_branch(oneFold, param, ...
+        'add_2_gcf', 1, 'color','r', ...
+        'PlotStyle', { 'LineStyle', '-', 'Marker', '.' }); % ,tdeco{:}
+[~,~,lineHandFold2] = plot_branch(twoFold, param, ...
+        'add_2_gcf', 1, 'color','r', ...
+        'PlotStyle', { 'LineStyle', '-', 'Marker', '.' }); % ,tdeco{:}
+
+lgnd = legend([lineHandHopf{1}, lineHandFold1{1}], ...
+    'Hopf Bifurcation', ...
+    'Fold Bifurcation', ...
+    'Location', 'SouthEast');
+set(gca,'YLim',[0 0.5])
+title('Feedback Amp vs Feedback Phase');
+
 
 %% Omega plot
 
-[~, omegaplot] = plot_branch(branch_stst,param, ...
-    'nunst_color',nunst_branch_stst);
+numel(branch_stst.point)
+saveThesePts = 500;
+plot_param = param;
+plot_param.units{param.omega.index} = 'GHz';
+
+prunedBranch_stst = branch_stst;
+prunedBranch_stst.point(saveThesePts+1677:end) = [];
+prunedBranch_stst.point(1:1677-saveThesePts) = [];
+
+[prunedNunst,~,~,~] = GetRotStability(prunedBranch_stst,funcs);
+
+[~, omegaplot] = plot_branch(prunedBranch_stst,plot_param, ...
+    'nunst_color',prunedNunst); % ,tdeco{:}
 
 
+colorbar('off')
+lgnd = legend('Zero', 'One', 'Two', 'Three');
+lgndTitle = get(legend,'title');
+set(lgndTitle,'string','Unstable Eigenvalues');
+title('\omega vs Feedback Phase, Feedback Amp = 0.373');
 
 
+%% Save things
 
+% Set + Print to pdf
+set(branchplot,'PaperType','a4')
+set(branchplot,'PaperOrientation','landscape');
+set(branchplot,'PaperUnits','normalized');
+set(branchplot,'PaperPosition', [0 0 1 1]);
+branchPlotFileName = [master_options.datadir_specific,'BranchPlot.pdf'];
+print(branchplot,branchPlotFileName,'-dpdf')
 
+% Set + Print to pdf
+set(omegaplot,'PaperType','a4')
+set(omegaplot,'PaperOrientation','landscape');
+set(omegaplot,'PaperUnits','normalized');
+set(omegaplot,'PaperPosition', [0 0 1 1]);
+omegaPlotFileName = [master_options.datadir_specific,'OmegaPlot.pdf'];
+print(omegaplot,omegaPlotFileName,'-dpdf')
 
+%% Print to combined PDF
 
-
-
-
-
+unix(['pdftk ', branchPlotFileName,' ', omegaPlotFileName, ' ', ...
+'cat output ', ... 
+master_options.datadir_specific, 'BranchOmegaPlotCombi.pdf']);
 
 
 
